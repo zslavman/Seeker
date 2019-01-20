@@ -7,9 +7,18 @@
 //
 
 import UIKit
+import CoreData
+
+
+protocol AddCompanyProtocol:class {
+	func addCompany(company: CompanyModel)
+}
+
 
 class AddCompanyController: UIViewController {
 
+	
+	weak public var companiesControllerDelegate: AddCompanyProtocol?
 	
 	private let backgroundView: UIView = {
 		let bv = UIView()
@@ -35,7 +44,7 @@ class AddCompanyController: UIViewController {
 		label.translatesAutoresizingMaskIntoConstraints = false
 		return label
 	}()
-	public var companiesController: CompaniesController?
+	
 	
 	
 	
@@ -74,9 +83,11 @@ class AddCompanyController: UIViewController {
 		
 		guard let name = Calc.checkBeforeUse(field: nameInputField) else { return }
 			
-		let _ = CompanyModel(name: name, founded: Date())
+		let newCompany = CompanyModel(name: name, founded: Date())
 		
-		onCancelClick()
+		dismiss(animated: true, completion: {
+			self.companiesControllerDelegate?.addCompany(company: newCompany)
+		})
 	}
 	
 	

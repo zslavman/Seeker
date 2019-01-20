@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 class CompaniesController: UITableViewController {
 
 	
@@ -34,13 +35,6 @@ class CompaniesController: UITableViewController {
 			action: #selector(onPlusClick)
 		)
 		
-		navigationItem.leftBarButtonItem = UIBarButtonItem(
-			title: "testAdd",
-			style: .plain,
-			target: self,
-			action: #selector(addCompany)
-		)
-		
 		setupTableStyle()
 	}
 
@@ -55,24 +49,17 @@ class CompaniesController: UITableViewController {
 	}
 	
 	
-	@objc public func addCompany(){
-		let tesla = CompanyModel(name: "Tesla", founded: Date())
-		companiesArr.append(tesla)
-		
-		let newIndexPath = IndexPath(row: companiesArr.count - 1, section: 0)
-		tableView.insertRows(at: [newIndexPath], with: .top)
-	}
-
+	
 	
 	@objc private func onPlusClick(){
 
 		let addCompanyController = AddCompanyController()
 		let navController = UINavigationController(rootViewController: addCompanyController)
 		
-		addCompanyController.companiesController = self
+		addCompanyController.companiesControllerDelegate = self
 		present(navController, animated: true, completion: nil)
-		
 	}
+	
 	
 	
 	
@@ -105,7 +92,15 @@ class CompaniesController: UITableViewController {
 }
 
 
-
+// выносим методы, которые бубдут исполнятся из другого класса посредством делегирования
+extension CompaniesController: AddCompanyProtocol{
+	
+	func addCompany(company: CompanyModel) {
+		companiesArr.append(company)
+		let newIndexPath = IndexPath(row: companiesArr.count - 1, section: 0)
+		tableView.insertRows(at: [newIndexPath], with: .top)
+	}
+}
 
 
 
