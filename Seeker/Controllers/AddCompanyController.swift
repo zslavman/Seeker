@@ -12,7 +12,9 @@ import CoreData
 
 protocol AddCompanyProtocol:class {
 	func addCompany(company: CompanyModel)
+	func didEditCompany(company: CompanyModel)
 }
+	
 
 
 class AddCompanyController: UIViewController {
@@ -138,9 +140,16 @@ class AddCompanyController: UIViewController {
 		company?.name = name
 		
 		
-		context.save()
-		
-		dismiss(animated: true, completion: nil)
+		do {
+			try context.save()
+			dismiss(animated: true) {
+				self.companiesControllerDelegate?.didEditCompany(company: self.company!)
+			}
+		}
+		catch let err {
+			print("Failed to save data: \(err.localizedDescription)")
+		}
+
 	}
 	
 	

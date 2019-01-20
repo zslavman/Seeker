@@ -126,8 +126,8 @@ class CompaniesController: UITableViewController {
 			}
 		}
 		
-		
 		let editAction = UITableViewRowAction(style: .normal, title: "Редакт", handler: onEditAction)
+		editAction.backgroundColor = #colorLiteral(red: 0.8925628481, green: 0.6441024697, blue: 0.1277349157, alpha: 1)
 		
 		return [deleteAction, editAction]
 	}
@@ -139,23 +139,35 @@ class CompaniesController: UITableViewController {
 	private func onEditAction(action: UITableViewRowAction, indexPath:IndexPath){
 		
 		let editCompanyController = AddCompanyController()
+		editCompanyController.companiesControllerDelegate = self
 		editCompanyController.company = companiesArr[indexPath.row]
 		let navController = UINavigationController(rootViewController: editCompanyController)
 		present(navController, animated: true, completion: nil)
 	}
 	
-	
-
 }
+
+
+
 
 
 // выносим методы, которые бубдут исполнятся из другого класса посредством делегирования
 extension CompaniesController: AddCompanyProtocol{
-	
+
 	func addCompany(company: CompanyModel) {
 		companiesArr.append(company)
 		let newIndexPath = IndexPath(row: companiesArr.count - 1, section: 0)
 		tableView.insertRows(at: [newIndexPath], with: .top)
+	}
+	
+	func didEditCompany(company: CompanyModel) {
+		
+		// find out company wich did change in array
+		let row = companiesArr.index(of: company)!
+		
+		let reloadIndeexPath = IndexPath(row: row, section: 0)
+		tableView.reloadRows(at: [reloadIndeexPath], with: .fade)
+		
 	}
 }
 
