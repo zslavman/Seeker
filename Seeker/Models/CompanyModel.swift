@@ -10,10 +10,10 @@ import Foundation
 
 
 
-struct CompanyModel {
-	
-	let name: String
-	let founded: Date
-	
-	
-}
+//struct CompanyModel {
+//	
+//	let name: String
+//	let founded: Date
+//}
+
+

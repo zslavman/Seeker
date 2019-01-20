@@ -7,24 +7,21 @@
 //
 
 import UIKit
-
+import CoreData
 
 class CompaniesController: UITableViewController {
 
 	
 	private let cellID = "cellID"
-	private var companiesArr = [
-		CompanyModel(name: "Эники", founded: Date()),
-		CompanyModel(name: "Левисы", founded: Date()),
-		CompanyModel(name: "Гучи", founded: Date()),
-		CompanyModel(name: "ПломБы", founded: Date())
-	]
+	private var companiesArr = [CompanyModel]()
 	
 	
 	
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		
+		fetchCompanies()
 		
 		navigationItem.title = "Компании"
 		
@@ -41,13 +38,31 @@ class CompaniesController: UITableViewController {
 
 	
 	
+	
+	private func fetchCompanies(){
+		
+		let context = CoreDataManager.shared.persistentContainer.viewContext
+
+		let fetchRequest = NSFetchRequest<CompanyModel>(entityName: "CompanyModel")
+		do {
+			companiesArr = try context.fetch(fetchRequest)
+			tableView.reloadData()
+		}
+		catch let error {
+			print("Failed to load data: \(error.localizedDescription)")
+		}
+		
+	}
+	
+	
+	
+	
 	private func setupTableStyle(){
 		tableView.backgroundColor = Props.darkGreen
 		tableView.separatorColor = .white
 		tableView.tableFooterView = UIView()
 		tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellID)
 	}
-	
 	
 	
 	
@@ -88,6 +103,48 @@ class CompaniesController: UITableViewController {
 		
 		return cell
 	}
+	
+	
+	
+	override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+		let deleteAction = UITableViewRowAction(style: .destructive, title: "Удалить") {
+			(_, indexPath) in
+			let companyToDelete = self.companiesArr[indexPath.row]
+			
+			//del from table source
+			self.companiesArr.remove(at: indexPath.row)
+			self.tableView.deleteRows(at: [indexPath], with: .left)
+			
+			// del from Core Data
+			let context = CoreDataManager.shared.persistentContainer.viewContext
+			context.delete(companyToDelete)
+			do {
+				try context.save()
+			}
+			catch let saveErr {
+				print(saveErr.localizedDescription)
+			}
+		}
+		
+		
+		let editAction = UITableViewRowAction(style: .normal, title: "Редакт", handler: onEditAction)
+		
+		return [deleteAction, editAction]
+	}
+	
+	
+	
+	
+	
+	private func onEditAction(action: UITableViewRowAction, indexPath:IndexPath){
+		
+		let editCompanyController = AddCompanyController()
+		editCompanyController.company = companiesArr[indexPath.row]
+		let navController = UINavigationController(rootViewController: editCompanyController)
+		present(navController, animated: true, completion: nil)
+	}
+	
+	
 
 }
 

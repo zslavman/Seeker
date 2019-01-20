@@ -17,6 +17,11 @@ protocol AddCompanyProtocol:class {
 
 class AddCompanyController: UIViewController {
 
+	public var company:CompanyModel? {
+		didSet{
+			nameInputField.text = company?.name
+		}
+	}
 	
 	weak public var companiesControllerDelegate: AddCompanyProtocol?
 	
@@ -53,7 +58,7 @@ class AddCompanyController: UIViewController {
 
 		setupUI()
 		
-		navigationItem.title = "Добавить компанию"
+		//navigationItem.title = "Добавить компанию"
 		view.backgroundColor = .white
 		
 		navigationItem.leftBarButtonItem = UIBarButtonItem(
@@ -72,6 +77,12 @@ class AddCompanyController: UIViewController {
 
 
 	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		
+		navigationItem.title = company == nil ? "Добавить компанию" : "Редакт. компанию"
+	}
+	
 	
 	
 	@objc private func onCancelClick(){
@@ -79,19 +90,60 @@ class AddCompanyController: UIViewController {
 	}
 	
 	
+	
+	
+	
 	@objc private func onSaveClick(){
+		if company == nil {
+			createCompany()
+		}
+		else {
+			saveCompanyChanges()
+		}
+		
+  	}
+	
+	
+	
+	
+	private func createCompany(){
 		
 		guard let name = Calc.checkBeforeUse(field: nameInputField) else { return }
-			
-		let newCompany = CompanyModel(name: name, founded: Date())
 		
-		dismiss(animated: true, completion: {
-			self.companiesControllerDelegate?.addCompany(company: newCompany)
-		})
+		let context = CoreDataManager.shared.persistentContainer.viewContext
+		let newCompany = NSEntityDescription.insertNewObject(forEntityName: "CompanyModel", into: context)
+		
+		newCompany.setValue(name, forKey: "name")
+		
+		// 2) perform the save
+		do {
+			try context.save()
+			dismiss(animated: true) {
+				self.companiesControllerDelegate?.addCompany(company: newCompany as! CompanyModel)
+			}
+		}
+		catch let err {
+			print("Failed to save data: \(err.localizedDescription)")
+		}
+	}
+
+	
+	
+	
+	private func saveCompanyChanges(){
+		
+		guard let name = Calc.checkBeforeUse(field: nameInputField) else { return }
+		let context = CoreDataManager.shared.persistentContainer.viewContext
+		
+		company?.name = name
+		
+		
+		context.save()
+		
+		dismiss(animated: true, completion: nil)
 	}
 	
 	
-
 	
 	
 	
