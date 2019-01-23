@@ -24,12 +24,8 @@ class CompaniesController: UITableViewController {
 		
 		navigationItem.title = "Компании"
 		
-		navigationItem.rightBarButtonItem = UIBarButtonItem(
-			image: #imageLiteral(resourceName: "plus_bttn"),
-			style: .plain,
-			target: self,
-			action: #selector(onPlusClick)
-		)
+		setupButtonsInNavBar(selector: #selector(onPlusClick))
+		
 		navigationItem.leftBarButtonItem = UIBarButtonItem(
 			title: "Удалить всё",
 			style: .plain,

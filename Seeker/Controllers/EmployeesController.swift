@@ -9,10 +9,61 @@
 import UIKit
 
 
-class EmployeesController: UIViewController {
+class EmployeesController: UITableViewController {
 	
+	
+	public var company: CompanyModel?
+	
+	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		
+		navigationItem.title = company?.name
+	}
+	
+	override func viewDidLoad() {
+		super.viewDidLoad()
+		
+		tableView.backgroundColor = Props.green1
+		
+		setupButtonsInNavBar(selector: #selector(onPlusClick))
+	}
+
+	
+	@objc private func onPlusClick(){
+		let navcontroller = UINavigationController(rootViewController: AddEmployeeController())
+		present(navcontroller, animated: true, completion: nil)
+	}
 	
 	
 	
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

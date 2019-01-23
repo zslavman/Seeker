@@ -53,7 +53,9 @@ extension CompaniesController {
 	}
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		navigationController?.pushViewController(<#T##viewController: UIViewController##UIViewController#>, animated: <#T##Bool#>)
+		let employeesController = EmployeesController()
+		employeesController.company = companiesArr[indexPath.row]
+		navigationController?.pushViewController(employeesController, animated: true)
 	}
 	
 	

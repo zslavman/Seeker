@@ -32,14 +32,14 @@ class AddCompanyController: UIViewController {
 			}
 		}
 	}
-	private lazy var backgroundView: UIView = {
-		let bv = UIView()
-		bv.backgroundColor = Props.blue5
-		bv.translatesAutoresizingMaskIntoConstraints = false
-		bv.isUserInteractionEnabled = true
-		bv.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
-		return bv
-	}()
+//	lazy var backView: UIView = {
+//		let bv = UIView()
+//		bv.backgroundColor = Props.blue5
+//		bv.translatesAutoresizingMaskIntoConstraints = false
+//		bv.isUserInteractionEnabled = true
+//		bv.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
+//		return bv
+//	}()
 	private lazy var photoPicker:UIImageView = {
 		let iv = UIImageView()
 		iv.translatesAutoresizingMaskIntoConstraints = false
@@ -85,12 +85,8 @@ class AddCompanyController: UIViewController {
 
 		view.backgroundColor = Props.darkGreen
 		
-		navigationItem.leftBarButtonItem = UIBarButtonItem(
-			title: "Отмена",
-			style: .plain,
-			target: self,
-			action: #selector(onCancelClick)
-		)
+		setupCancelButton()
+		
 		navigationItem.rightBarButtonItem = UIBarButtonItem(
 			title: "Сохранить",
 			style: .plain,
@@ -113,14 +109,11 @@ class AddCompanyController: UIViewController {
 	}
 	
 	
-	@objc private func onCancelClick(){
-		dismiss(animated: true, completion: nil)
-	}
+
 	
-	@objc private func dismissKeyboard() {
-		print("4545454")
-		nameInputField.resignFirstResponder()
-	}
+//	@objc private func dismissKeyboard() {
+//		nameInputField.resignFirstResponder()
+//	}
 	
 	
 	@objc private func onSaveClick(){
@@ -130,8 +123,7 @@ class AddCompanyController: UIViewController {
 		else {
 			saveCompanyChanges()
 		}
-		
-  	}
+	}
 	
 	
 	@objc private func onPhotoClick(){
@@ -201,18 +193,13 @@ class AddCompanyController: UIViewController {
 
 	
 	private func setupUI(){
-		view.addSubview(backgroundView)
+		let backView = createBackground()
 		view.addSubview(nameLabel)
 		view.addSubview(nameInputField)
 		view.addSubview(datePicker)
 		view.addSubview(photoPicker)
 		
 		NSLayoutConstraint.activate([
-			backgroundView.topAnchor.constraint(equalTo: view.topAnchor),
-			backgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-			backgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-			backgroundView.heightAnchor.constraint(equalToConstant: 350),
-			
 			photoPicker.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
 			photoPicker.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 			photoPicker.widthAnchor.constraint(equalToConstant: imageSize),
@@ -231,7 +218,7 @@ class AddCompanyController: UIViewController {
 			datePicker.topAnchor.constraint(equalTo: nameInputField.bottomAnchor),
 			datePicker.leadingAnchor.constraint(equalTo: view.leadingAnchor),
 			datePicker.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-			datePicker.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor),
+			datePicker.bottomAnchor.constraint(equalTo: backView.bottomAnchor),
 		])
 	}
 	

@@ -44,6 +44,24 @@ class CoreDataManager {
 	}
 	
 	
+	/// we need return Error for catch it in caller Class
+	public func createEmployee(employeeName: String) -> Error? {
+		let context = persistentContainer.viewContext
+		
+		let employee = NSEntityDescription.insertNewObject(forEntityName: "Employee", into: context)
+		employee.setValue(employeeName, forKey: "name")
+		
+		do {
+			try context.save()
+			return nil
+		}
+		catch let err {
+			print("Failed to create employee, \(err.localizedDescription)")
+			return err
+		}
+		
+	}
+	
 }
 
 

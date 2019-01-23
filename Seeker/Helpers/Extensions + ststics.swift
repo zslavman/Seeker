@@ -48,6 +48,88 @@ class UILabelWithEdges: UILabel {
 
 
 
+extension UIViewController {
+	
+	internal func setupButtonsInNavBar(selector: Selector){
+		navigationItem.rightBarButtonItem = UIBarButtonItem(
+			image: #imageLiteral(resourceName: "plus_bttn"),
+			style: .plain,
+			target: self,
+			action: selector
+		)
+	}
+	
+	
+	internal func setupCancelButton(){
+		navigationItem.leftBarButtonItem = UIBarButtonItem(
+			title: "Отмена",
+			style: .plain,
+			target: self,
+			action: #selector(onCancelClick)
+		)
+	}
+	
+	
+	@objc private func onCancelClick(){
+		dismiss(animated: true, completion: nil)
+	}
+	
+	
+	@discardableResult internal func createBackground(height: CGFloat = 350) -> UIView{
+		
+		let backView = UIView()
+		backView.backgroundColor = Props.blue5
+		backView.translatesAutoresizingMaskIntoConstraints = false
+		backView.isUserInteractionEnabled = true
+		backView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
+		
+		view.addSubview(backView)
+		
+		NSLayoutConstraint.activate([
+			backView.topAnchor.constraint(equalTo: view.topAnchor),
+			backView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+			backView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+			backView.heightAnchor.constraint(equalToConstant: height)
+		])
+		return backView
+	}
+	
+	
+	@objc private func dismissKeyboard(){
+		view.endEditing(true)
+	}
+
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
