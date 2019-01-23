@@ -16,7 +16,6 @@ protocol AddCompanyProtocol:class {
 }
 	
 
-
 class AddCompanyController: UIViewController {
 
 	weak public var companiesControllerDelegate: AddCompanyProtocol?
@@ -33,10 +32,12 @@ class AddCompanyController: UIViewController {
 			}
 		}
 	}
-	private let backgroundView: UIView = {
+	private lazy var backgroundView: UIView = {
 		let bv = UIView()
 		bv.backgroundColor = Props.blue5
 		bv.translatesAutoresizingMaskIntoConstraints = false
+		bv.isUserInteractionEnabled = true
+		bv.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
 		return bv
 	}()
 	private lazy var photoPicker:UIImageView = {
@@ -51,7 +52,6 @@ class AddCompanyController: UIViewController {
 	private let nameLabel: UILabelWithEdges = {
 		let label = UILabelWithEdges()
 		label.text = "Имя"
-		//label.backgroundColor = .green
 		label.translatesAutoresizingMaskIntoConstraints = false
 		label.textInsets.left = 15
 		return label
@@ -59,7 +59,6 @@ class AddCompanyController: UIViewController {
 	private let nameInputField: UITextField = {
 		let label = UITextField()
 		label.placeholder = "Введите имя"
-		//label.backgroundColor = .red
 		label.layer.borderWidth = 1
 		label.layer.borderColor = Props.green4.cgColor
 		label.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: label.frame.height))
@@ -78,13 +77,13 @@ class AddCompanyController: UIViewController {
 	internal lazy var isImageInstalled = false // I don't want to save default picture in storage
 	
 	
+	
     override func viewDidLoad() {
         super.viewDidLoad()
 
 		setupUI()
-		
-		//navigationItem.title = "Добавить компанию"
-		view.backgroundColor = .white
+
+		view.backgroundColor = Props.darkGreen
 		
 		navigationItem.leftBarButtonItem = UIBarButtonItem(
 			title: "Отмена",
@@ -100,6 +99,12 @@ class AddCompanyController: UIViewController {
 		)
     }
 
+	
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+		nameInputField.becomeFirstResponder()
+	}
+	
 
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
@@ -110,6 +115,11 @@ class AddCompanyController: UIViewController {
 	
 	@objc private func onCancelClick(){
 		dismiss(animated: true, completion: nil)
+	}
+	
+	@objc private func dismissKeyboard() {
+		print("4545454")
+		nameInputField.resignFirstResponder()
 	}
 	
 	
@@ -125,6 +135,9 @@ class AddCompanyController: UIViewController {
 	
 	
 	@objc private func onPhotoClick(){
+		DispatchQueue.main.async { // ??
+			self.view.endEditing(true)
+		}
 		let imagePickerController = UIImagePickerController()
 		imagePickerController.delegate = self
 		imagePickerController.allowsEditing = true
@@ -212,7 +225,7 @@ class AddCompanyController: UIViewController {
 			
 			nameInputField.topAnchor.constraint(equalTo: nameLabel.topAnchor),
 			nameInputField.leadingAnchor.constraint(equalTo: nameLabel.trailingAnchor),
-			nameInputField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+			nameInputField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -15),
 			nameInputField.bottomAnchor.constraint(equalTo: nameLabel.bottomAnchor),
 			
 			datePicker.topAnchor.constraint(equalTo: nameInputField.bottomAnchor),

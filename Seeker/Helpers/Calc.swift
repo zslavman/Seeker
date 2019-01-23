@@ -38,4 +38,27 @@ class Calc {
 		return alertController
 	}
 	
+	
+	public static func convertDate(founded: Date) -> String{
+		let dateFormater = DateFormatter()
+		dateFormater.locale = Locale(identifier: "RU")
+		dateFormater.dateFormat = "dd MMM yyyy"
+		let dateString = dateFormater.string(from: founded)
+		return dateString
+	}
+	
+	
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+

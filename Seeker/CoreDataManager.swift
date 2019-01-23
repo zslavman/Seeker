@@ -27,6 +27,23 @@ class CoreDataManager {
 	
 	
 	
+	public func fetchCompanies() -> [CompanyModel]{
+		
+		let context = persistentContainer.viewContext
+		var returnedArr = [CompanyModel]()
+		
+		let fetchRequest = NSFetchRequest<CompanyModel>(entityName: "CompanyModel")
+		do {
+			returnedArr = try context.fetch(fetchRequest)
+			return returnedArr
+		}
+		catch let error {
+			print("Failed to load data: \(error.localizedDescription)")
+			return []
+		}
+	}
+	
+	
 }
 
 
