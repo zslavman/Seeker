@@ -19,25 +19,39 @@ protocol AddCompanyProtocol:class {
 
 class AddCompanyController: UIViewController {
 
+	weak public var companiesControllerDelegate: AddCompanyProtocol?
 	public var company:CompanyModel? {
 		didSet{
 			nameInputField.text = company?.name
+			if let founded = company?.founded {
+				datePicker.date = founded
+			}
+			if let imageBinary = company?.imageData {
+				photoPicker.image = UIImage(data: imageBinary)
+				roundPhoto()
+				isImageInstalled = true
+			}
 		}
 	}
-	
-	weak public var companiesControllerDelegate: AddCompanyProtocol?
-	
 	private let backgroundView: UIView = {
 		let bv = UIView()
-		bv.backgroundColor = Props.blue4
+		bv.backgroundColor = Props.blue5
 		bv.translatesAutoresizingMaskIntoConstraints = false
 		return bv
 	}()
-	
+	private lazy var photoPicker:UIImageView = {
+		let iv = UIImageView()
+		iv.translatesAutoresizingMaskIntoConstraints = false
+		iv.contentMode = .scaleAspectFit
+		iv.image = UIImage(named: "select_photo")
+		iv.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onPhotoClick)))
+		iv.isUserInteractionEnabled = true
+		return iv
+	}()
 	private let nameLabel: UILabelWithEdges = {
 		let label = UILabelWithEdges()
 		label.text = "Имя"
-		label.backgroundColor = .green
+		//label.backgroundColor = .green
 		label.translatesAutoresizingMaskIntoConstraints = false
 		label.textInsets.left = 15
 		return label
@@ -45,14 +59,23 @@ class AddCompanyController: UIViewController {
 	private let nameInputField: UITextField = {
 		let label = UITextField()
 		label.placeholder = "Введите имя"
-		label.backgroundColor = .red
+		//label.backgroundColor = .red
+		label.layer.borderWidth = 1
+		label.layer.borderColor = Props.green4.cgColor
 		label.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: label.frame.height))
 		label.leftViewMode = .always
 		label.translatesAutoresizingMaskIntoConstraints = false
 		return label
 	}()
-	
-	
+	private let datePicker: UIDatePicker = {
+		let dp = UIDatePicker()
+		dp.datePickerMode = .date
+		dp.locale = Locale(identifier: "RU")
+		dp.translatesAutoresizingMaskIntoConstraints = false
+		return dp
+	}()
+	private let imageSize:CGFloat = 100
+	internal lazy var isImageInstalled = false // I don't want to save default picture in storage
 	
 	
     override func viewDidLoad() {
@@ -78,7 +101,6 @@ class AddCompanyController: UIViewController {
     }
 
 
-	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		
@@ -86,13 +108,9 @@ class AddCompanyController: UIViewController {
 	}
 	
 	
-	
 	@objc private func onCancelClick(){
 		dismiss(animated: true, completion: nil)
 	}
-	
-	
-	
 	
 	
 	@objc private func onSaveClick(){
@@ -106,18 +124,33 @@ class AddCompanyController: UIViewController {
   	}
 	
 	
+	@objc private func onPhotoClick(){
+		let imagePickerController = UIImagePickerController()
+		imagePickerController.delegate = self
+		imagePickerController.allowsEditing = true
+		present(imagePickerController, animated: true, completion: nil)
+	}
 	
 	
 	private func createCompany(){
-		
-		guard let name = Calc.checkBeforeUse(field: nameInputField) else { return }
-		
+		guard let name = Calc.checkBeforeUse(field: nameInputField)
+		else {
+			let alertController = Calc.createAlert(message: "Введите имя компании!", completion: nil)
+			present(alertController, animated: true, completion: nil)
+			nameInputField.text = ""
+			return
+		}
+
 		let context = CoreDataManager.shared.persistentContainer.viewContext
 		let newCompany = NSEntityDescription.insertNewObject(forEntityName: "CompanyModel", into: context)
 		
 		newCompany.setValue(name, forKey: "name")
+		newCompany.setValue(datePicker.date, forKey: "founded")
+		if let image = photoPicker.image, isImageInstalled {
+			let data = UIImageJPEGRepresentation(image, 0.6)
+			newCompany.setValue(data, forKey: "imageData")
+		}
 		
-		// 2) perform the save
 		do {
 			try context.save()
 			dismiss(animated: true) {
@@ -130,15 +163,17 @@ class AddCompanyController: UIViewController {
 	}
 
 	
-	
-	
 	private func saveCompanyChanges(){
 		
 		guard let name = Calc.checkBeforeUse(field: nameInputField) else { return }
 		let context = CoreDataManager.shared.persistentContainer.viewContext
 		
 		company?.name = name
-		
+		company?.founded = datePicker.date
+		if let image = photoPicker.image, isImageInstalled {
+			let imageData = UIImageJPEGRepresentation(image, 0.6)
+			company?.imageData = imageData
+		}
 		
 		do {
 			try context.save()
@@ -149,43 +184,74 @@ class AddCompanyController: UIViewController {
 		catch let err {
 			print("Failed to save data: \(err.localizedDescription)")
 		}
-
 	}
-	
-	
-	
-	
+
 	
 	private func setupUI(){
 		view.addSubview(backgroundView)
 		view.addSubview(nameLabel)
 		view.addSubview(nameInputField)
+		view.addSubview(datePicker)
+		view.addSubview(photoPicker)
 		
 		NSLayoutConstraint.activate([
+			backgroundView.topAnchor.constraint(equalTo: view.topAnchor),
 			backgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
 			backgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-			backgroundView.topAnchor.constraint(equalTo: view.topAnchor),
-			backgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+			backgroundView.heightAnchor.constraint(equalToConstant: 350),
 			
-			nameLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+			photoPicker.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+			photoPicker.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+			photoPicker.widthAnchor.constraint(equalToConstant: imageSize),
+			photoPicker.heightAnchor.constraint(equalToConstant: imageSize),
+			
+			nameLabel.topAnchor.constraint(equalTo: photoPicker.bottomAnchor, constant: 20),
 			nameLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
 			nameLabel.widthAnchor.constraint(equalToConstant: 100),
-			//nameLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
 			nameLabel.heightAnchor.constraint(equalToConstant: 50),
 			
+			nameInputField.topAnchor.constraint(equalTo: nameLabel.topAnchor),
 			nameInputField.leadingAnchor.constraint(equalTo: nameLabel.trailingAnchor),
 			nameInputField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-			nameInputField.topAnchor.constraint(equalTo: nameLabel.topAnchor),
 			nameInputField.bottomAnchor.constraint(equalTo: nameLabel.bottomAnchor),
 			
-			
+			datePicker.topAnchor.constraint(equalTo: nameInputField.bottomAnchor),
+			datePicker.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+			datePicker.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+			datePicker.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor),
 		])
-		
-		
 	}
 	
 	
+	internal func roundPhoto() {
+		photoPicker.layer.cornerRadius = imageSize / 2
+		photoPicker.clipsToBounds = true
+		photoPicker.layer.borderColor = Props.green4.cgColor
+		photoPicker.layer.borderWidth = 1
+	}
+	
+}
 
+
+extension AddCompanyController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+	
+	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+		var selectedImage:UIImage?
+		if let editedImage = info[UIImagePickerControllerEditedImage] as? UIImage{
+			selectedImage = editedImage
+		}
+		else if let originalImage = info[UIImagePickerControllerOriginalImage] as? UIImage{
+			selectedImage = originalImage
+		}
+		if selectedImage != nil {
+			photoPicker.image = selectedImage
+			roundPhoto()
+			isImageInstalled = true
+		}
+		
+		dismiss(animated: true, completion: nil)
+	}
+	
 }
 
 

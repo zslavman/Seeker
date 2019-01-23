@@ -17,7 +17,6 @@ class CompaniesController: UITableViewController {
 	
 	
 	
-	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
@@ -36,9 +35,6 @@ class CompaniesController: UITableViewController {
 	}
 
 
-	
-	
-	
 	private func fetchCompanies(){
 		
 		let context = CoreDataManager.shared.persistentContainer.viewContext
@@ -55,15 +51,12 @@ class CompaniesController: UITableViewController {
 	}
 	
 	
-	
-	
 	private func setupTableStyle(){
 		tableView.backgroundColor = Props.darkGreen
 		tableView.separatorColor = .white
 		tableView.tableFooterView = UIView()
 		tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellID)
 	}
-	
 	
 	
 	@objc private func onPlusClick(){
@@ -74,8 +67,6 @@ class CompaniesController: UITableViewController {
 		addCompanyController.companiesControllerDelegate = self
 		present(navController, animated: true, completion: nil)
 	}
-	
-	
 	
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -96,14 +87,39 @@ class CompaniesController: UITableViewController {
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath)
 		
+		let cellData = companiesArr[indexPath.row]
+		
 		cell.backgroundColor = Props.green3
 		cell.textLabel?.textColor = .white
 		cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-		cell.textLabel?.text = companiesArr[indexPath.row].name
+		
+		if let name = cellData.name, let founded = cellData.founded {
+			let string = convertDate(founded: founded)
+			cell.textLabel?.text = "\(name) -> Основана: \(string)"
+		}
+		else {
+			cell.textLabel?.text = cellData.name!
+		}
+		
+		if let imageBinary = cellData.imageData {
+			let img = UIImage(data: imageBinary)
+			cell.imageView?.image = img
+		}
+		else{
+			cell.imageView?.image = #imageLiteral(resourceName: "select_photo")
+		}
 		
 		return cell
 	}
 	
+	
+	private func convertDate(founded: Date) -> String{
+		let dateFormater = DateFormatter()
+		dateFormater.locale = Locale(identifier: "RU")
+		dateFormater.dateFormat = "dd MMM yyyy"
+		let dateString = dateFormater.string(from: founded)
+		return dateString
+	}
 	
 	
 	override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
@@ -131,9 +147,6 @@ class CompaniesController: UITableViewController {
 		
 		return [deleteAction, editAction]
 	}
-	
-	
-	
 	
 	
 	private func onEditAction(action: UITableViewRowAction, indexPath:IndexPath){
