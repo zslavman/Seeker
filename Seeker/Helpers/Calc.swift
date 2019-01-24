@@ -25,7 +25,7 @@ class Calc {
 	}
 	
 	
-	public static func createAlert(message: String, title: String = "", completion: (() -> ())?) -> UIAlertController {
+	public static func createAlert(message: String, title: String = "Ошибка", completion: (() -> ())? = nil) -> UIAlertController {
 		let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
 		let OK_action = UIAlertAction(title: "OK", style: .default, handler: {
 			(action) in
@@ -37,6 +37,26 @@ class Calc {
 		alertController.addAction(OK_action)
 		return alertController
 	}
+	
+	
+	
+	/// Validating UITextFields
+	///
+	/// - Parameters:
+	///   - textfields: array of textfields
+	///   - alertStrings: array of alert messages
+	public static func isFormValid<T>(textfields:[T], alertStrings:[String?]) -> UIAlertController?{
+		
+		for (index, _) in textfields.enumerated(){
+			
+			if Calc.checkBeforeUse(field: textfields[index]) == nil { 	// if field is empty
+				let message = alertStrings[index] ?? "Неправильное поданы агрументы alertStrings"
+				return Calc.createAlert(message: message)
+			}
+		}
+		return nil
+	}
+	
 	
 	
 	public static func convertDate(founded: Date) -> String{

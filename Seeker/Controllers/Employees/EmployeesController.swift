@@ -16,6 +16,8 @@ class EmployeesController: UITableViewController {
 	private var employeesArr = [Employee]()
 	private let cellID = "cellID"
 	
+	private var shortNameEmployees = [Employee]()
+	private var longNameEmployees = [Employee]()
 	
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -48,35 +50,57 @@ class EmployeesController: UITableViewController {
 	
 	private func fetchEmployees(){
 		guard let employeesForCurrentCompany = company?.employees?.allObjects as? [Employee] else { return }
-		employeesArr = employeesForCurrentCompany
 		
-//		let context = CoreDataManager.shared.persistentContainer.viewContext
-//		let request = NSFetchRequest<Employee>(entityName: ENT.Employee)
-//		do {
-//			employeesArr = try context.fetch(request)
-//		}
-//		catch let err {
-//			print("Failed to fetch employees: \(err.localizedDescription)")
-//		}
+		shortNameEmployees = employeesForCurrentCompany.filter{($0.name?.count)! <= 6}
+		longNameEmployees = employeesForCurrentCompany.filter{($0.name?.count)! > 6}
 		
+		//employeesArr = employeesForCurrentCompany
 	}
 	
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return employeesArr.count
+		if section == 0 {
+			return shortNameEmployees.count
+		}
+		return longNameEmployees.count
+	}
+	
+	override func numberOfSections(in tableView: UITableView) -> Int {
+		return 2
+	}
+	
+	override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+		let label = UILabelWithEdges()
+		label.textInsets.left = 15
+		if section == 0 {
+			label.text = "shortNameEmployees"
+		}
+		else {
+			label.text = "longNameEmployees"
+		}
+		label.textColor = Props.green1
+		label.font = UIFont.boldSystemFont(ofSize: 16)
+		label.backgroundColor = Props.blue4
+		
+		return label
+	}
+	
+	override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+		return 50
 	}
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath)
-		let employee = employeesArr[indexPath.row]
+		
+		let employee = indexPath.section == 0 ? shortNameEmployees[indexPath.row] : longNameEmployees[indexPath.row]
 		
 		cell.textLabel?.text = employee.name
 		cell.backgroundColor = Props.green3
 		cell.textLabel?.textColor = .white
 		cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 16)
 		
-		if let taxId = employee.privateInformation?.taxId {
-			cell.textLabel?.text?.append("  \(taxId)")
+		if let birthday = employee.privateInformation?.birthDay {
+			cell.textLabel?.text?.append("  #  \(Calc.convertDate(founded: birthday))")
 		}
 		
 		return cell

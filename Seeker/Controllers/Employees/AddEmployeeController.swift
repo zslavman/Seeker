@@ -16,7 +16,8 @@ protocol AddEmployeeDelegate:class {
 class AddEmployeeController: UIViewController {
 
 	public weak var delegate:AddEmployeeDelegate?
-	public var company: CompanyModel?
+	public var company: CompanyModel!
+	private let segmentVars = ["executive", "managers", "staff"]
 	
 	private let nameLabel: UILabelWithEdges = {
 		let label = UILabelWithEdges()
@@ -25,18 +26,52 @@ class AddEmployeeController: UIViewController {
 		label.textInsets.left = 15
 		return label
 	}()
-	private let nameInputField: UITextField = {
+	private let nameInput: UITextField = {
 		let label = UITextField()
+		label.backgroundColor = .white
 		label.placeholder = "Введите имя"
 		label.layer.cornerRadius = 14
 		label.clipsToBounds = true
-		label.layer.borderWidth = 1
+		label.layer.borderWidth = 0.75
 		label.layer.borderColor = Props.green4.cgColor
 		label.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: label.frame.height))
 		label.leftViewMode = .always
 		label.translatesAutoresizingMaskIntoConstraints = false
 		return label
 	}()
+	private let birthdayLabel: UILabelWithEdges = {
+		let label = UILabelWithEdges()
+		label.text = "Дата рожд."
+		label.translatesAutoresizingMaskIntoConstraints = false
+		label.textInsets.left = 15
+		return label
+	}()
+	private let birthdayInput: UITextField = {
+		let label = UITextField()
+		label.backgroundColor = .white
+		label.placeholder = "чч/мм/гггг"
+		label.layer.cornerRadius = 14
+		label.clipsToBounds = true
+		label.layer.borderWidth = 0.75
+		label.layer.borderColor = Props.green4.cgColor
+		label.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: label.frame.height))
+		label.leftViewMode = .always
+		label.translatesAutoresizingMaskIntoConstraints = false
+		return label
+	}()
+	private let typeSegmentedControl: UISegmentedControl = {
+		let sc = UISegmentedControl(items: ["Руководство", "Менджмент", "Персонал"])
+		sc.translatesAutoresizingMaskIntoConstraints = false
+		sc.tintColor = Props.green1
+		sc.selectedSegmentIndex = 0
+		sc.setTitleTextAttributes([NSAttributedStringKey.font: UIFont.systemFont(ofSize: 17)], for: .normal)
+		sc.layer.cornerRadius = 8
+		sc.layer.borderColor = Props.green1.cgColor
+		sc.layer.borderWidth = 1
+		sc.clipsToBounds = true
+		return sc
+	}()
+	
 	
 	
 	
@@ -52,42 +87,70 @@ class AddEmployeeController: UIViewController {
 			target: self,
 			action: #selector(onSaveClick)
 		)
-		
-		createBackground()
-		
 		setupUI()
 	}
 	
 
 	private func setupUI(){
+		createBackground(height: 190)
 		view.addSubview(nameLabel)
-		view.addSubview(nameInputField)
+		view.addSubview(nameInput)
+		view.addSubview(birthdayLabel)
+		view.addSubview(birthdayInput)
+		view.addSubview(typeSegmentedControl)
 		
 		NSLayoutConstraint.activate([
-			nameLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+			nameLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
 			nameLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-			nameLabel.widthAnchor.constraint(equalToConstant: 100),
+			nameLabel.widthAnchor.constraint(equalToConstant: 120),
 			nameLabel.heightAnchor.constraint(equalToConstant: 50),
 			
-			nameInputField.topAnchor.constraint(equalTo: nameLabel.topAnchor),
-			nameInputField.leadingAnchor.constraint(equalTo: nameLabel.trailingAnchor),
-			nameInputField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -15),
-			nameInputField.bottomAnchor.constraint(equalTo: nameLabel.bottomAnchor),
+			nameInput.topAnchor.constraint(equalTo: nameLabel.topAnchor),
+			nameInput.leadingAnchor.constraint(equalTo: nameLabel.trailingAnchor),
+			nameInput.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -15),
+			nameInput.bottomAnchor.constraint(equalTo: nameLabel.bottomAnchor),
+			
+			birthdayLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 10),
+			birthdayLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+			birthdayLabel.widthAnchor.constraint(equalToConstant: 120),
+			birthdayLabel.heightAnchor.constraint(equalToConstant: 50),
+			
+			birthdayInput.topAnchor.constraint(equalTo: birthdayLabel.topAnchor),
+			birthdayInput.leadingAnchor.constraint(equalTo: birthdayLabel.trailingAnchor),
+			birthdayInput.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -15),
+			birthdayInput.bottomAnchor.constraint(equalTo: birthdayLabel.bottomAnchor),
+			
+			typeSegmentedControl.topAnchor.constraint(equalTo: birthdayInput.bottomAnchor, constant: 15),
+			typeSegmentedControl.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 15),
+			typeSegmentedControl.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -15),
+			typeSegmentedControl.heightAnchor.constraint(equalToConstant: 40),
 		])
 	}
 	
 	
 	@objc private func onSaveClick(){
-		guard let name = Calc.checkBeforeUse(field: nameInputField)
-			else {
-				let alertController = Calc.createAlert(message: "Введите имя", completion: nil)
-				present(alertController, animated: true, completion: nil)
-				nameInputField.text = ""
-				return
+		if let alertController = Calc.isFormValid(textfields: [nameInput, birthdayInput], alertStrings: ["Введите имя", "Введите дату"]){
+			present(alertController, animated: true)
+			return
 		}
-		guard let company = self.company else { return }
 		
-		let tuple = CoreDataManager.shared.createEmployee(employeeName: name, company: company)
+		let dateFormatter = DateFormatter()
+		dateFormatter.dateFormat = "dd/MM/yyyy"
+		
+		guard let birthDate = dateFormatter.date(from: birthdayInput.text!) else {
+			let alertController = Calc.createAlert(message: "Неверный формат даты!")
+			present(alertController, animated: true)
+			return
+		}
+		
+		let type = segmentVars[typeSegmentedControl.selectedSegmentIndex]
+		
+		let tuple = CoreDataManager.shared.createEmployee(
+			employeeName: nameInput.text!,
+			type		: type,
+			birthday	: birthDate,
+			company		: company
+		)
 		if tuple.1 == nil {
 			dismiss(animated: true, completion: {
 				self.delegate?.updateEmployes(employee: tuple.0!)
@@ -95,8 +158,6 @@ class AddEmployeeController: UIViewController {
 		}
 	}
 	
-	
-
 }
 
 

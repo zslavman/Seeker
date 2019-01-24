@@ -27,10 +27,10 @@ extension CompaniesController {
 	
 	
 	override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-		let headerViev = UIView()
-		headerViev.backgroundColor = Props.blue4
+		let headerView = UIView()
+		headerView.backgroundColor = Props.blue4
 		
-		return headerViev
+		return headerView
 	}
 	
 	override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
