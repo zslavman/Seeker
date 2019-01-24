@@ -32,14 +32,6 @@ class AddCompanyController: UIViewController {
 			}
 		}
 	}
-//	lazy var backView: UIView = {
-//		let bv = UIView()
-//		bv.backgroundColor = Props.blue5
-//		bv.translatesAutoresizingMaskIntoConstraints = false
-//		bv.isUserInteractionEnabled = true
-//		bv.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
-//		return bv
-//	}()
 	private lazy var photoPicker:UIImageView = {
 		let iv = UIImageView()
 		iv.translatesAutoresizingMaskIntoConstraints = false
@@ -59,6 +51,8 @@ class AddCompanyController: UIViewController {
 	private let nameInputField: UITextField = {
 		let label = UITextField()
 		label.placeholder = "Введите имя"
+		label.layer.cornerRadius = 14
+		label.clipsToBounds = true
 		label.layer.borderWidth = 1
 		label.layer.borderColor = Props.green4.cgColor
 		label.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: label.frame.height))
@@ -108,14 +102,6 @@ class AddCompanyController: UIViewController {
 		navigationItem.title = company == nil ? "Добавить компанию" : "Редакт. компанию"
 	}
 	
-	
-
-	
-//	@objc private func dismissKeyboard() {
-//		nameInputField.resignFirstResponder()
-//	}
-	
-	
 	@objc private func onSaveClick(){
 		if company == nil {
 			createCompany()
@@ -147,7 +133,7 @@ class AddCompanyController: UIViewController {
 		}
 
 		let context = CoreDataManager.shared.persistentContainer.viewContext
-		let newCompany = NSEntityDescription.insertNewObject(forEntityName: "CompanyModel", into: context)
+		let newCompany = NSEntityDescription.insertNewObject(forEntityName: ENT.CompanyModel, into: context)
 		
 		newCompany.setValue(name, forKey: "name")
 		newCompany.setValue(datePicker.date, forKey: "founded")

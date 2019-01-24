@@ -60,12 +60,8 @@
 		563F3A2021F3B24A005F4FD3 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				56FD127B21F37F8E00003E76 /* CompaniesController.swift */,
-				563E867421F8E5B70005A17A /* CompaniesController+UITableView.swift */,
-				563E867221F8E48F0005A17A /* CompaniesController+AddCompany.swift */,
-				563F3A1E21F3B1BB005F4FD3 /* AddCompanyController.swift */,
-				563E867621F8EB010005A17A /* EmployeesController.swift */,
-				563E867821F8F2A80005A17A /* AddEmployeeController.swift */,
+				564E16E321F9DEDD00F51934 /* Companies */,
+				564E16E421F9DEFC00F51934 /* Employees */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -76,6 +72,26 @@
 				563F3A1C21F3AE47005F4FD3 /* CompanyModel.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		564E16E321F9DEDD00F51934 /* Companies */ = {
+			isa = PBXGroup;
+			children = (
+				56FD127B21F37F8E00003E76 /* CompaniesController.swift */,
+				563E867421F8E5B70005A17A /* CompaniesController+UITableView.swift */,
+				563E867221F8E48F0005A17A /* CompaniesController+AddCompany.swift */,
+				563F3A1E21F3B1BB005F4FD3 /* AddCompanyController.swift */,
+			);
+			path = Companies;
+			sourceTree = "<group>";
+		};
+		564E16E421F9DEFC00F51934 /* Employees */ = {
+			isa = PBXGroup;
+			children = (
+				563E867621F8EB010005A17A /* EmployeesController.swift */,
+				563E867821F8F2A80005A17A /* AddEmployeeController.swift */,
+			);
+			path = Employees;
 			sourceTree = "<group>";
 		};
 		56501D2321F8C3EC00B0E29F /* Views */ = {

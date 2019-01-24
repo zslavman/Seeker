@@ -8,8 +8,16 @@
 
 import UIKit
 
+protocol AddEmployeeDelegate:class {
+	func updateEmployes(employee: Employee)
+}
+
+
 class AddEmployeeController: UIViewController {
 
+	public weak var delegate:AddEmployeeDelegate?
+	public var company: CompanyModel?
+	
 	private let nameLabel: UILabelWithEdges = {
 		let label = UILabelWithEdges()
 		label.text = "Имя"
@@ -20,6 +28,8 @@ class AddEmployeeController: UIViewController {
 	private let nameInputField: UITextField = {
 		let label = UITextField()
 		label.placeholder = "Введите имя"
+		label.layer.cornerRadius = 14
+		label.clipsToBounds = true
 		label.layer.borderWidth = 1
 		label.layer.borderColor = Props.green4.cgColor
 		label.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: label.frame.height))
@@ -75,11 +85,14 @@ class AddEmployeeController: UIViewController {
 				nameInputField.text = ""
 				return
 		}
-		let error = CoreDataManager.shared.createEmployee(employeeName: name)
-		if error == nil {
-			dismiss(animated: true)
-		}
+		guard let company = self.company else { return }
 		
+		let tuple = CoreDataManager.shared.createEmployee(employeeName: name, company: company)
+		if tuple.1 == nil {
+			dismiss(animated: true, completion: {
+				self.delegate?.updateEmployes(employee: tuple.0!)
+			})
+		}
 	}
 	
 	
