@@ -13,11 +13,8 @@ class EmployeesController: UITableViewController {
 	
 	
 	public var company: CompanyModel?
-	private var employeesArr = [Employee]()
+	private var employeesArr = [[Employee]]()
 	private let cellID = "cellID"
-	
-	private var shortNameEmployees = [Employee]()
-	private var longNameEmployees = [Employee]()
 	
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -50,34 +47,31 @@ class EmployeesController: UITableViewController {
 	
 	private func fetchEmployees(){
 		guard let employeesForCurrentCompany = company?.employees?.allObjects as? [Employee] else { return }
+		employeesArr.removeAll()
 		
-		shortNameEmployees = employeesForCurrentCompany.filter{($0.name?.count)! <= 6}
-		longNameEmployees = employeesForCurrentCompany.filter{($0.name?.count)! > 6}
-		
-		//employeesArr = employeesForCurrentCompany
+		// executive, managers, staff
+		for (index, _) in AddEmployeeController.segmentVars.enumerated() {
+			employeesArr.append(employeesForCurrentCompany.filter{$0.type == AddEmployeeController.segmentVars[index]})
+		}
 	}
+	
+	
 	
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		if section == 0 {
-			return shortNameEmployees.count
-		}
-		return longNameEmployees.count
+		return employeesArr[section].count
 	}
 	
 	override func numberOfSections(in tableView: UITableView) -> Int {
-		return 2
+		return employeesArr.count
 	}
 	
 	override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 		let label = UILabelWithEdges()
 		label.textInsets.left = 15
-		if section == 0 {
-			label.text = "shortNameEmployees"
-		}
-		else {
-			label.text = "longNameEmployees"
-		}
+		
+		label.text = AddEmployeeController.tabNames[section]
+		
 		label.textColor = Props.green1
 		label.font = UIFont.boldSystemFont(ofSize: 16)
 		label.backgroundColor = Props.blue4
@@ -92,17 +86,15 @@ class EmployeesController: UITableViewController {
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath)
 		
-		let employee = indexPath.section == 0 ? shortNameEmployees[indexPath.row] : longNameEmployees[indexPath.row]
+		let employee = employeesArr[indexPath.section][indexPath.row]
 		
-		cell.textLabel?.text = employee.name
+		//cell.textLabel?.text = employee.name
 		cell.backgroundColor = Props.green3
-		cell.textLabel?.textColor = .white
-		cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 16)
 		
 		if let birthday = employee.privateInformation?.birthDay {
-			cell.textLabel?.text?.append("  #  \(Calc.convertDate(founded: birthday))")
+			let str2 = "  #  \(Calc.convertDate(founded: birthday))"
+			cell.textLabel?.attributedText = Calc.twoColorString(strings: (employee.name!, str2), colors: (UIColor.white, Props.green4))
 		}
-		
 		return cell
 	}
 	
@@ -113,9 +105,13 @@ class EmployeesController: UITableViewController {
 extension EmployeesController: AddEmployeeDelegate {
 	
 	func updateEmployes(employee: Employee) {
-		employeesArr.append(employee)
-		let newIndexPath = IndexPath(row: employeesArr.count - 1, section: 0)
-		tableView.insertRows(at: [newIndexPath], with: .top)
+		guard let section = AddEmployeeController.segmentVars.index(of: employee.type!) else { return }
+		let row = employeesArr[section].count
+		
+		employeesArr[section].append(employee)
+		
+		let insertionIndexPath = IndexPath(row: row, section: section)
+		tableView.insertRows(at: [insertionIndexPath], with: .top)
 	}
 }
 

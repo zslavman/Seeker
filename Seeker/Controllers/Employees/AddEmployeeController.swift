@@ -17,7 +17,19 @@ class AddEmployeeController: UIViewController {
 
 	public weak var delegate:AddEmployeeDelegate?
 	public var company: CompanyModel!
-	private let segmentVars = ["executive", "managers", "staff"]
+	// for change ordering do it in two arrays
+	public static let segmentVars = [
+		"executive",
+		"managers",
+		"staff",
+	]
+	public static let tabNames = [
+		"Руководство",
+		"Менджмент",
+		"Персонал"
+	]
+	private let dFormat = "dd.MM.yyyy"
+	
 	
 	private let nameLabel: UILabelWithEdges = {
 		let label = UILabelWithEdges()
@@ -48,8 +60,10 @@ class AddEmployeeController: UIViewController {
 	}()
 	private let birthdayInput: UITextField = {
 		let label = UITextField()
+		label.keyboardType = .numbersAndPunctuation
+		label.autocorrectionType = UITextAutocorrectionType.no
 		label.backgroundColor = .white
-		label.placeholder = "чч/мм/гггг"
+		label.placeholder = "чч.мм.гггг"
 		label.layer.cornerRadius = 14
 		label.clipsToBounds = true
 		label.layer.borderWidth = 0.75
@@ -60,7 +74,7 @@ class AddEmployeeController: UIViewController {
 		return label
 	}()
 	private let typeSegmentedControl: UISegmentedControl = {
-		let sc = UISegmentedControl(items: ["Руководство", "Менджмент", "Персонал"])
+		let sc = UISegmentedControl(items: AddEmployeeController.tabNames)
 		sc.translatesAutoresizingMaskIntoConstraints = false
 		sc.tintColor = Props.green1
 		sc.selectedSegmentIndex = 0
@@ -135,7 +149,7 @@ class AddEmployeeController: UIViewController {
 		}
 		
 		let dateFormatter = DateFormatter()
-		dateFormatter.dateFormat = "dd/MM/yyyy"
+		dateFormatter.dateFormat = dFormat
 		
 		guard let birthDate = dateFormatter.date(from: birthdayInput.text!) else {
 			let alertController = Calc.createAlert(message: "Неверный формат даты!")
@@ -143,7 +157,7 @@ class AddEmployeeController: UIViewController {
 			return
 		}
 		
-		let type = segmentVars[typeSegmentedControl.selectedSegmentIndex]
+		let type = AddEmployeeController.segmentVars[typeSegmentedControl.selectedSegmentIndex]
 		
 		let tuple = CoreDataManager.shared.createEmployee(
 			employeeName: nameInput.text!,

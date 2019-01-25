@@ -92,8 +92,18 @@ extension CompaniesController {
 		return [deleteAction, editAction]
 	}
 	
-	
-	
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 

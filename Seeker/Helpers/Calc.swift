@@ -58,7 +58,6 @@ class Calc {
 	}
 	
 	
-	
 	public static func convertDate(founded: Date) -> String{
 		let dateFormater = DateFormatter()
 		dateFormater.locale = Locale(identifier: "RU")
@@ -68,8 +67,27 @@ class Calc {
 	}
 	
 	
+	/// coloraise string into two colors
+	public static func twoColorString(strings:(String, String), colors:(UIColor, UIColor)) -> NSAttributedString {
+		let atr = NSMutableAttributedString(string: "")
+		atr.append(NSAttributedString(string: strings.0, attributes: [
+			.font: UIFont.boldSystemFont(ofSize: 16),
+			.foregroundColor: colors.0,
+		]))
+		atr.append(NSAttributedString(string: strings.1, attributes: [
+			.font: UIFont.boldSystemFont(ofSize: 16),
+			.foregroundColor: colors.1,
+		]))
+		return atr
+	}
 	
 }
+
+
+
+
+
+
 
 
 
