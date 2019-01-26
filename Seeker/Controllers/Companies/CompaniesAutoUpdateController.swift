@@ -37,7 +37,6 @@ class CompaniesAutoUpdateController: UITableViewController {
 		return frc
 	}()
 	private var cell_ID = "cell_ID"
-	private var compArr = [CompanyModel]()
 
 	
 	

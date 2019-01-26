@@ -27,7 +27,7 @@ extension CompaniesController {
 				do {
 					try backgroundContext.save()
 					DispatchQueue.main.async {
-						self.companiesArr = CoreDataManager.shared.fetchCompanies()
+						//self.companiesArr = CoreDataManager.shared.fetchCompanies()
 						self.tableView.reloadData()
 					}
 				}
@@ -60,7 +60,7 @@ extension CompaniesController {
 						// reset will forget all of the objects fetched before
 						CoreDataManager.shared.persistentContainer.viewContext.reset() // no visible changes without this
 						
-						self.companiesArr = CoreDataManager.shared.fetchCompanies()
+						//self.companiesArr = CoreDataManager.shared.fetchCompanies()
 						
 						self.tableView.reloadData()
 					}

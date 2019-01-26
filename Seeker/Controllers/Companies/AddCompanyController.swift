@@ -122,31 +122,29 @@ class AddCompanyController: UIViewController {
 		present(imagePickerController, animated: true, completion: nil)
 	}
 	
-	
+	/// create new company
 	private func createCompany(){
-		guard let name = Calc.checkBeforeUse(field: nameInputField)
-		else {
-			let alertController = Calc.createAlert(message: "Введите имя компании!", completion: nil)
-			present(alertController, animated: true, completion: nil)
+		if let alertController = Calc.isFormValid(textfields: [nameInputField], alertStrings: ["Введите имя компании!"]){
+			present(alertController, animated: true)
 			nameInputField.text = ""
 			return
 		}
 
 		let context = CoreDataManager.shared.persistentContainer.viewContext
-		let newCompany = NSEntityDescription.insertNewObject(forEntityName: ENT.CompanyModel, into: context)
+		let newCompany = NSEntityDescription.insertNewObject(forEntityName: ENT.CompanyModel, into: context) as! CompanyModel
 		
-		newCompany.setValue(name, forKey: "name")
-		newCompany.setValue(datePicker.date, forKey: "founded")
+		newCompany.name = nameInputField.text!
+		newCompany.founded = datePicker.date
 		if let image = photoPicker.image, isImageInstalled {
 			let data = UIImageJPEGRepresentation(image, 0.6)
-			newCompany.setValue(data, forKey: "imageData")
+			newCompany.imageData = data
 		}
 		
 		do {
 			try context.save()
-			dismiss(animated: true) {
-				self.companiesControllerDelegate?.addCompany(company: newCompany as! CompanyModel)
-			}
+			dismiss(animated: true, completion: {
+				self.companiesControllerDelegate?.addCompany(company: newCompany)
+			})
 		}
 		catch let err {
 			print("Failed to save data: \(err.localizedDescription)")
@@ -154,8 +152,8 @@ class AddCompanyController: UIViewController {
 	}
 
 	
+	/// edit company
 	private func saveCompanyChanges(){
-		
 		guard let name = Calc.checkBeforeUse(field: nameInputField) else { return }
 		let context = CoreDataManager.shared.persistentContainer.viewContext
 		
@@ -168,9 +166,9 @@ class AddCompanyController: UIViewController {
 		
 		do {
 			try context.save()
-			dismiss(animated: true) {
+			dismiss(animated: true, completion: {
 				self.companiesControllerDelegate?.didEditCompany(company: self.company!)
-			}
+			})
 		}
 		catch let err {
 			print("Failed to save data: \(err.localizedDescription)")

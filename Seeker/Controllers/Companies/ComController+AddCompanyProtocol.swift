@@ -12,18 +12,19 @@ import UIKit
 extension CompaniesController: AddCompanyProtocol{
 	
 	func addCompany(company: CompanyModel) {
-		companiesArr.append(company)
-		let newIndexPath = IndexPath(row: companiesArr.count - 1, section: 0)
-		tableView.insertRows(at: [newIndexPath], with: .top)
+		print("Added new company: \(company.name ?? "")")
+//		companiesArr.append(company)
+//		let newIndexPath = IndexPath(row: companiesArr.count - 1, section: 0)
+		//tableView.insertRows(at: [newIndexPath], with: .top)
 	}
 	
 	func didEditCompany(company: CompanyModel) {
-		
+		print("Did edit \(company.name ?? "")")
 		// find out company wich did change in array
-		let row = companiesArr.index(of: company)!
-		
-		let reloadIndeexPath = IndexPath(row: row, section: 0)
-		tableView.reloadRows(at: [reloadIndeexPath], with: .fade)
+//		let row = companiesArr.index(of: company)!
+//
+//		let reloadIndeexPath = IndexPath(row: row, section: 0)
+//		tableView.reloadRows(at: [reloadIndeexPath], with: .fade)
 		
 	}
 }

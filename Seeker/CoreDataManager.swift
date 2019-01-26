@@ -34,7 +34,7 @@ class CoreDataManager {
 	}()
 	
 	
-	
+	/// not awesome method for fetching
 	public func fetchCompanies() -> [CompanyModel]{
 		
 		let context = persistentContainer.viewContext
