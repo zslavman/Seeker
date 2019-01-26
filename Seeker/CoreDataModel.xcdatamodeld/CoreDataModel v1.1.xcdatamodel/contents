@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14135" systemVersion="17F77" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="CompanyModel" representedClassName="CompanyModel" syncable="YES" codeGenerationType="class">
+        <attribute name="founded" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="imageData" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="membership" attributeType="String" defaultValueString="Brotherhood of Steel" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="employees" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Employee" inverseName="company" inverseEntity="Employee" syncable="YES"/>
+    </entity>
+    <entity name="Employee" representedClassName="Employee" syncable="YES" codeGenerationType="class">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="company" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CompanyModel" inverseName="employees" inverseEntity="CompanyModel" syncable="YES"/>
+        <relationship name="privateInformation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PrivateInformation" inverseName="employee" inverseEntity="PrivateInformation" syncable="YES"/>
+    </entity>
+    <entity name="PrivateInformation" representedClassName="PrivateInformation" syncable="YES" codeGenerationType="class">
+        <attribute name="birthDay" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="taxId" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="employee" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Employee" inverseName="privateInformation" inverseEntity="Employee" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="CompanyModel" positionX="-200" positionY="-256" width="128" height="120"/>
+        <element name="Employee" positionX="-198" positionY="-51" width="128" height="103"/>
+        <element name="PrivateInformation" positionX="-9" positionY="-52" width="128" height="88"/>
+    </elements>
+</model>
