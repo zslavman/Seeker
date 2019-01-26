@@ -26,12 +26,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		window?.rootViewController = UINavigationController(rootViewController: CompaniesController())
 		//window?.rootViewController = UINavigationController(rootViewController: CompaniesAutoUpdateController())
-		
 		return true
 	}
 
 
-	
 	private func configureAppearance(){
 		
 		UINavigationBar.appearance().tintColor = .white
@@ -46,9 +44,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		]
 	}
 	
-
-
 }
+
+
 
 
 

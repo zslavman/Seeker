@@ -11,7 +11,7 @@ import CoreData
 
 
 protocol AddCompanyProtocol:class {
-	func addCompany(company: CompanyModel)
+	func addCompany(name:String, fDate:Date, imgData:Data?)
 	func didEditCompany(company: CompanyModel)
 }
 	
@@ -50,6 +50,7 @@ class AddCompanyController: UIViewController {
 	}()
 	private let nameInputField: UITextField = {
 		let label = UITextField()
+		label.backgroundColor = .white
 		label.placeholder = "Введите имя"
 		label.layer.cornerRadius = 14
 		label.clipsToBounds = true
@@ -68,7 +69,7 @@ class AddCompanyController: UIViewController {
 		return dp
 	}()
 	private let imageSize:CGFloat = 100
-	internal lazy var isImageInstalled = false // I don't want to save default picture in storage
+	internal lazy var isImageInstalled = false // don't want to save default picture in storage
 	
 	
 	
@@ -107,7 +108,7 @@ class AddCompanyController: UIViewController {
 			createCompany()
 		}
 		else {
-			saveCompanyChanges()
+			editAndSaveCompanyChanges()
 		}
 	}
 	
@@ -122,6 +123,7 @@ class AddCompanyController: UIViewController {
 		present(imagePickerController, animated: true, completion: nil)
 	}
 	
+	
 	/// create new company
 	private func createCompany(){
 		if let alertController = Calc.isFormValid(textfields: [nameInputField], alertStrings: ["Введите имя компании!"]){
@@ -129,50 +131,33 @@ class AddCompanyController: UIViewController {
 			nameInputField.text = ""
 			return
 		}
-
-		let context = CoreDataManager.shared.persistentContainer.viewContext
-		let newCompany = NSEntityDescription.insertNewObject(forEntityName: ENT.CompanyModel, into: context) as! CompanyModel
+		var imgData: Data!
 		
-		newCompany.name = nameInputField.text!
-		newCompany.founded = datePicker.date
 		if let image = photoPicker.image, isImageInstalled {
-			let data = UIImageJPEGRepresentation(image, 0.6)
-			newCompany.imageData = data
+			imgData = UIImageJPEGRepresentation(image, 0.6)
 		}
 		
-		do {
-			try context.save()
-			dismiss(animated: true, completion: {
-				self.companiesControllerDelegate?.addCompany(company: newCompany)
-			})
-		}
-		catch let err {
-			print("Failed to save data: \(err.localizedDescription)")
-		}
+		dismiss(animated: true, completion: {
+			self.companiesControllerDelegate?.addCompany(name: self.nameInputField.text!, fDate: self.datePicker.date, imgData: imgData)
+		})
 	}
 
 	
 	/// edit company
-	private func saveCompanyChanges(){
+	private func editAndSaveCompanyChanges(){
 		guard let name = Calc.checkBeforeUse(field: nameInputField) else { return }
-		let context = CoreDataManager.shared.persistentContainer.viewContext
-		
-		company?.name = name
-		company?.founded = datePicker.date
-		if let image = photoPicker.image, isImageInstalled {
-			let imageData = UIImageJPEGRepresentation(image, 0.6)
-			company?.imageData = imageData
-		}
-		
-		do {
-			try context.save()
-			dismiss(animated: true, completion: {
-				self.companiesControllerDelegate?.didEditCompany(company: self.company!)
-			})
-		}
-		catch let err {
-			print("Failed to save data: \(err.localizedDescription)")
-		}
+	
+		// if change company before dismiss - all wil be OK, but you can't see animation of change in tableView
+		// it is because fetchedResultsController reload views immediately
+		dismiss(animated: true, completion: {
+			self.company?.name = name
+			self.company?.founded = self.datePicker.date
+			if let image = self.photoPicker.image, self.isImageInstalled {
+				let imageData = UIImageJPEGRepresentation(image, 0.6)
+				self.company?.imageData = imageData
+			}
+			self.companiesControllerDelegate?.didEditCompany(company: self.company!)
+		})
 	}
 
 	

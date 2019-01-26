@@ -21,7 +21,7 @@ extension CompaniesController: NSFetchedResultsControllerDelegate {
 		case .insert:
 			tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
 		case .delete:
-			tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
+			tableView.deleteSections(IndexSet(integer: sectionIndex), with: .right)
 		case .move:
 			break
 		case .update:
@@ -32,9 +32,9 @@ extension CompaniesController: NSFetchedResultsControllerDelegate {
 	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 		switch type {
 		case .insert:
-			tableView.insertRows(at: [newIndexPath!], with: .fade)
+			tableView.insertRows(at: [newIndexPath!], with: .top)
 		case .delete:
-			tableView.deleteRows(at: [indexPath!], with: .top)
+			tableView.deleteRows(at: [indexPath!], with: .right)
 		case .update:
 			tableView.reloadRows(at: [indexPath!], with: .fade)
 		case .move:

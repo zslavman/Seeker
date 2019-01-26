@@ -45,9 +45,12 @@ extension CompaniesController {
 	override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
 		if fetchedResultsController.sections![section].numberOfObjects == 0 {
 			navigationItem.leftBarButtonItem?.tintColor = .clear
+			addRefreshControl()
 			return 150
 		}
 		navigationItem.leftBarButtonItem?.tintColor = .white
+		refreshControl?.removeTarget(self, action: #selector(onRefresh), for: .allEvents)
+		refreshControl = nil
 		return 0
 	}
 	
@@ -61,6 +64,12 @@ extension CompaniesController {
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! CompanyCell
 		cell.company = fetchedResultsController.object(at: indexPath)
+		
+		// cell highlight color
+		let selectionColor = UIView()
+		selectionColor.backgroundColor = Props.blue4
+		cell.selectedBackgroundView = selectionColor
+		
 		return cell
 	}
 	

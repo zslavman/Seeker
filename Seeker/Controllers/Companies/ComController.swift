@@ -39,7 +39,6 @@ class CompaniesController: UITableViewController {
 	}()
 	internal let cellID = "cellID"
 	//internal var companiesArr = [CompanyModel]()
-
 	
 	
 	
@@ -47,9 +46,12 @@ class CompaniesController: UITableViewController {
 		super.viewDidLoad()
 		//companiesArr = CoreDataManager.shared.fetchCompanies()
 		
-		navigationItem.title = "Компании"
 		setupButtonsInNavBar(selector: #selector(onPlusClick))
 		
+		// Fixing black artifact
+		navigationController?.view.backgroundColor = Props.green3
+		
+		navigationItem.title = "Компании"
 		navigationItem.leftBarButtonItem = UIBarButtonItem(
 			title: "Удалить все",
 			style: .plain,
@@ -59,7 +61,24 @@ class CompaniesController: UITableViewController {
 		setupTableStyle()
 	}
 	
-
+	
+	internal func addRefreshControl(){
+		if refreshControl != nil {
+			return
+		}
+		let customRefreshControl = UIRefreshControl()
+		customRefreshControl.tintColor = .white
+		customRefreshControl.addTarget(self, action: #selector(onRefresh), for: .valueChanged)
+		self.refreshControl = customRefreshControl
+	}
+	
+	
+	@objc internal func onRefresh(){
+		NetworkService.shared.downloadCompaniesFromServer()
+		refreshControl?.endRefreshing()
+	}
+	
+	
 	private func setupTableStyle(){
 		tableView.backgroundColor = Props.darkGreen
 		tableView.separatorColor = .white
@@ -69,37 +88,30 @@ class CompaniesController: UITableViewController {
 	
 	
 	@objc private func onResetClick(){
-		
+		let request: NSFetchRequest<CompanyModel> = CompanyModel.fetchRequest()
+		//request.predicate = NSPredicate(format: "name CONTAINS %@", "Goordi") // case sensetive filter
 		let context = CoreDataManager.shared.persistentContainer.viewContext
-		let company = CompanyModel(context: context)
-		company.name = "Goordi"
+		let companiesToDelete = try? context.fetch(request)
+		
+		companiesToDelete?.forEach { (com) in
+			context.delete(com)
+		}
 		try? context.save()
-		
-		
-//		let request: NSFetchRequest<CompanyModel> = CompanyModel.fetchRequest()
-//		//request.predicate = NSPredicate(format: "name CONTAINS %@", "Goordi") // case sensetive filter
-//		let context = CoreDataManager.shared.persistentContainer.viewContext
-//		let companiesToDelete = try? context.fetch(request)
-//		
-//		companiesToDelete?.forEach { (com) in
-//			context.delete(com)
-//		}
-//		try? context.save()
-		
-		
-		
-		
-		
+	}
+	
+	
+	
+//	@objc private func onResetClick(){
 //		guard companiesArr.count > 0 else { return }
 //
 //		let context = CoreDataManager.shared.persistentContainer.viewContext
 //		let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: CompanyModel.fetchRequest())
-//		
+//
 //		do {
 //			try context.execute(batchDeleteRequest)
-//			
+//
 //			var indexPathToRemove = [IndexPath]()
-//			
+//
 //			for (index, _) in companiesArr.enumerated() {
 //				let indexPath = IndexPath(row: index, section: 0)
 //				indexPathToRemove.append(indexPath)
@@ -110,7 +122,8 @@ class CompaniesController: UITableViewController {
 //		catch let err {
 //			print("Failed to delete data: \(err.localizedDescription)")
 //		}
-	}
+//	}
+	
 	
 	
 	@objc private func onPlusClick(){

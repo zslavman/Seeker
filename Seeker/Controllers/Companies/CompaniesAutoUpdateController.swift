@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-
+// [NOT USED]
 class CompaniesAutoUpdateController: UITableViewController {
 	
 	private lazy var fetchedResultsController: NSFetchedResultsController<CompanyModel> = {
