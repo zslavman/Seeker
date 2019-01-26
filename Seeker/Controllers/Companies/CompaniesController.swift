@@ -11,7 +11,6 @@ import CoreData
 
 class CompaniesController: UITableViewController {
 
-	
 	internal let cellID = "cellID"
 	internal var companiesArr = [CompanyModel]()
 	
@@ -34,11 +33,12 @@ class CompaniesController: UITableViewController {
 		)
 		setupTableStyle()
 	}
+	
 
 	
 	@objc private func onResetClick(){
 		guard companiesArr.count > 0 else { return }
-		
+
 		let context = CoreDataManager.shared.persistentContainer.viewContext
 		let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: CompanyModel.fetchRequest())
 		

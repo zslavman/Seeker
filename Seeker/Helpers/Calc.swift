@@ -39,7 +39,6 @@ class Calc {
 	}
 	
 	
-	
 	/// Validating UITextFields
 	///
 	/// - Parameters:
@@ -79,6 +78,17 @@ class Calc {
 			.foregroundColor: colors.1,
 		]))
 		return atr
+	}
+	
+	
+	/// execution speed measurement
+	static func timeMeasuringCodeRunning(title:String, operationBlock: () -> ()) {
+		let start = CFAbsoluteTimeGetCurrent()
+		operationBlock()
+		let finish = CFAbsoluteTimeGetCurrent()
+		let timeElapsed = finish - start
+		let roundedTime = String(format: "%.3f", timeElapsed)
+		print ("Время выполнения \(title) = \(roundedTime) секунд")
 	}
 	
 }

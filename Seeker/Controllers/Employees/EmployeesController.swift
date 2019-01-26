@@ -88,7 +88,8 @@ class EmployeesController: UITableViewController {
 		
 		let employee = employeesArr[indexPath.section][indexPath.row]
 		
-		//cell.textLabel?.text = employee.name
+		cell.textLabel?.text = employee.name
+		cell.textLabel?.textColor = .white
 		cell.backgroundColor = Props.green3
 		
 		if let birthday = employee.privateInformation?.birthDay {
