@@ -34,24 +34,7 @@ class CoreDataManager {
 	}()
 	
 	
-	/// not awesome method for fetching
-	public func fetchCompanies() -> [CompanyModel]{
-		
-		let context = persistentContainer.viewContext
-		var returnedArr = [CompanyModel]()
-		
-		let fetchRequest = NSFetchRequest<CompanyModel>(entityName: ENT.CompanyModel)
-		do {
-			returnedArr = try context.fetch(fetchRequest)
-			return returnedArr
-		}
-		catch let error {
-			print("Failed to load data: \(error.localizedDescription)")
-			return []
-		}
-	}
-	
-	
+
 	/// we need to return Error for catch it from caller Class
 	public func createEmployee(employeeName: String, type:String, birthday: Date, company: CompanyModel) -> (Employee?, Error?) {
 		let context = persistentContainer.viewContext
@@ -67,8 +50,7 @@ class CoreDataManager {
 		employee.privateInformation = information
 		employee.company = company
 		employee.type = type
- 
-		do {
+ 		do {
 			try context.save()
 			return (employee, nil)
 		}
@@ -76,10 +58,39 @@ class CoreDataManager {
 			print("Failed to create employee, \(err.localizedDescription)")
 			return (nil, err)
 		}
-		
 	}
 	
+	
+	public func saveContext(){
+		do {
+			try persistentContainer.viewContext.save()
+		}
+		catch let err {
+			print("Failed to save data: \(err.localizedDescription)")
+		}
+	}
+	
+	
+	/// not awesome method for fetching
+	public func fetchCompanies() -> [CompanyModel]{
+		let context = persistentContainer.viewContext
+		var returnedArr = [CompanyModel]()
+		
+		let fetchRequest = NSFetchRequest<CompanyModel>(entityName: ENT.CompanyModel)
+		do {
+			returnedArr = try context.fetch(fetchRequest)
+			return returnedArr
+		}
+		catch let error {
+			print("Failed to load data: \(error.localizedDescription)")
+			return []
+		}
+	}
+	
+	
 }
+
+
 
 
 

@@ -27,7 +27,7 @@ struct NetworkService {
 				return
 			}
 			guard let data = data else { return }
-			//let str = String(data: data, encoding: .utf8)
+//			let str = String(data: data, encoding: String.Encoding.utf8)
 			
 			do {
 				let someData = try JSONDecoder().decode([CompanyNet].self, from: data)
@@ -67,18 +67,22 @@ struct NetworkService {
 						employee.company = company
 					})
 					
-					do {
-						try privateContext.save()
-						try privateContext.parent?.save()
-					}
-					catch let err {
-						print("Failed to save companies", err.localizedDescription)
-					}
-					
+//					do {
+//						try privateContext.save()
+//						try privateContext.parent?.save()
+//					}
+//					catch let err {
+//						print("Failed to save companies", err.localizedDescription)
+//					}
 				})
-				
-				
-				
+				// save context after loop will be better
+				do {
+					try privateContext.save()
+					try privateContext.parent?.save()
+				}
+				catch let err {
+					print("Failed to save companies", err.localizedDescription)
+				}
 			}
 			catch let err {
 				print("Failed to serealize JSON", err.localizedDescription)

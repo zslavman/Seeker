@@ -87,7 +87,7 @@ class CompaniesController: UITableViewController {
 	}
 	
 	
-	@objc private func onResetClick(){
+	@objc private func onResetClick22(){
 		let request: NSFetchRequest<CompanyModel> = CompanyModel.fetchRequest()
 		//request.predicate = NSPredicate(format: "name CONTAINS %@", "Goordi") // case sensetive filter
 		let context = CoreDataManager.shared.persistentContainer.viewContext
@@ -98,6 +98,35 @@ class CompaniesController: UITableViewController {
 		}
 		try? context.save()
 	}
+	
+	
+		@objc private func onResetClick(){
+			let context = CoreDataManager.shared.persistentContainer.viewContext
+			let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: CompanyModel.fetchRequest())
+			batchDeleteRequest.resultType = .resultTypeObjectIDs
+			
+			do {
+				let batchDeleteResult = try context.execute(batchDeleteRequest) as! NSBatchDeleteResult
+				// Batch updates work directly on the persistent store file instead of going through the managed
+				// object context, so the context doesn't know about them. When you delete the objects by fetching
+				// and then deleting, you're working through the context, so it knows about the changes you're
+				// making (in fact it's performing those changes for you)
+				
+				// update context version 1
+				context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy // without this you get an error "Cocoa error 133020"
+				let objectIDArray = batchDeleteResult.result as! [NSManagedObjectID]
+				let changes = [NSDeletedObjectsKey: objectIDArray]
+				NSManagedObjectContext.mergeChanges(fromRemoteContextSave: changes, into: [context])
+				
+				 // update context version 2 (without table animation)
+//				 context.reset()
+//				 try fetchedResultsController.performFetch()
+//				 tableView.reloadData()
+			}
+			catch let err {
+				print("Failed to delete data: \(err.localizedDescription)")
+			}
+		}
 	
 	
 	

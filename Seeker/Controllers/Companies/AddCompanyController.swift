@@ -138,7 +138,11 @@ class AddCompanyController: UIViewController {
 		}
 		
 		dismiss(animated: true, completion: {
-			self.companiesControllerDelegate?.addCompany(name: self.nameInputField.text!, fDate: self.datePicker.date, imgData: imgData)
+			self.companiesControllerDelegate?.addCompany(
+				name	: self.nameInputField.text!,
+				fDate	: self.datePicker.date,
+				imgData	: imgData
+			)
 		})
 	}
 
@@ -147,16 +151,19 @@ class AddCompanyController: UIViewController {
 	private func editAndSaveCompanyChanges(){
 		guard let name = Calc.checkBeforeUse(field: nameInputField) else { return }
 	
-		// if change company before dismiss - all wil be OK, but you can't see animation of change in tableView
-		// it is because fetchedResultsController reload views immediately
+		// if change company before dismiss - all wil be OK, but you can't see
+		// animation of change in tableView. It is because fetchedResultsController
+		// reload views immediately
 		dismiss(animated: true, completion: {
-			self.company?.name = name
-			self.company?.founded = self.datePicker.date
-			if let image = self.photoPicker.image, self.isImageInstalled {
-				let imageData = UIImageJPEGRepresentation(image, 0.6)
-				self.company?.imageData = imageData
+			DispatchQueue.main.async { // sometimes name doesn't change
+				self.company?.name = name
+				self.company?.founded = self.datePicker.date
+				if let image = self.photoPicker.image, self.isImageInstalled {
+					let imageData = UIImageJPEGRepresentation(image, 0.6)
+					self.company?.imageData = imageData
+				}
+				self.companiesControllerDelegate?.didEditCompany(company: self.company!)
 			}
-			self.companiesControllerDelegate?.didEditCompany(company: self.company!)
 		})
 	}
 

@@ -57,9 +57,9 @@ class CompanyCell: UITableViewCell {
 			mainLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
 			mainLabel.leftAnchor.constraint(equalTo: companyPhoto.rightAnchor, constant: 16),
 			mainLabel.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -16),
-			
 		])
 	}
+	
 	
 	private func setValues(){
 		mainLabel.text = company?.name
@@ -76,6 +76,13 @@ class CompanyCell: UITableViewCell {
 			companyPhoto.clipsToBounds = true
 		}
 	}
+	
+	
+//	override func prepareForReuse() {
+//		super.prepareForReuse()
+//		companyPhoto.image = nil
+//	}
+	
 	
 	
 }
