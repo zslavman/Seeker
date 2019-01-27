@@ -3,6 +3,7 @@
     <entity name="CompanyModel" representedClassName="CompanyModel" syncable="YES" codeGenerationType="class">
         <attribute name="founded" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="imageData" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="imageUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="membership" attributeType="String" defaultValueString="Brotherhood of Steel" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="employees" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Employee" inverseName="company" inverseEntity="Employee" syncable="YES"/>
@@ -19,7 +20,7 @@
         <relationship name="employee" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Employee" inverseName="privateInformation" inverseEntity="Employee" syncable="YES"/>
     </entity>
     <elements>
-        <element name="CompanyModel" positionX="-200" positionY="-256" width="128" height="120"/>
+        <element name="CompanyModel" positionX="-200" positionY="-256" width="128" height="135"/>
         <element name="Employee" positionX="-198" positionY="-51" width="128" height="103"/>
         <element name="PrivateInformation" positionX="-9" positionY="-52" width="128" height="88"/>
     </elements>

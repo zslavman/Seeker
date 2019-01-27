@@ -16,8 +16,8 @@ class CompanyCell: UITableViewCell {
 			setValues()
 		}
 	}
-	private let companyPhoto: UIImageView = {
-		let iv = UIImageView()
+	private var companyPhoto: ImageLoader = {
+		let iv = ImageLoader()
 		iv.image = #imageLiteral(resourceName: "select_photo")
 		iv.contentMode = .scaleAspectFill
 		iv.translatesAutoresizingMaskIntoConstraints = false
@@ -65,27 +65,40 @@ class CompanyCell: UITableViewCell {
 		mainLabel.text = company?.name
 		if let name = company?.name, let founded = company?.founded {
 			let string = Calc.convertDate(founded: founded)
-			mainLabel.attributedText = Calc.twoColorString(strings: (name, "  #  Основана: \(string)"), colors: (UIColor.white, Props.green4))
+			mainLabel.attributedText = Calc.twoColorString(strings: (name, "  # Основана: \(string)"), colors: (UIColor.white, Props.green4))
 		}
 		if let imageBinary = company?.imageData {
 			let img = UIImage(data: imageBinary)
-			companyPhoto.image = img
-			companyPhoto.layer.cornerRadius = photoSize / 2
-			companyPhoto.layer.borderColor = Props.green1.cgColor
-			companyPhoto.layer.borderWidth = 1
-			companyPhoto.clipsToBounds = true
+			setLoadedImage(img: img!)
+		}
+		else if let imageUrl = company?.imageUrl {
+			companyPhoto.loadImage(urlString: imageUrl, callback: {
+				(img) in
+				guard let img = img else { return }
+				DispatchQueue.main.async {
+					self.setLoadedImage(img: img)
+				}
+			})
 		}
 	}
 	
-	
-//	override func prepareForReuse() {
-//		super.prepareForReuse()
-//		companyPhoto.image = nil
-//	}
-	
+	private func setLoadedImage(img: UIImage){
+		companyPhoto.image = img
+		companyPhoto.layer.cornerRadius = photoSize / 2
+		companyPhoto.layer.borderColor = Props.green1.cgColor
+		companyPhoto.layer.borderWidth = 1
+		companyPhoto.clipsToBounds = true
+		
+		//TODO: save image to Core Data
+//		company?.imageUrl = nil
+//		company?.imageData = UIImageJPEGRepresentation(img, 0.6)
+//		CoreDataManager.shared.saveContext()
+	}
 	
 	
 }
+
+
 
 
 

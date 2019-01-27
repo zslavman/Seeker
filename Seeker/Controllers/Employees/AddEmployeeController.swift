@@ -93,7 +93,7 @@ class AddEmployeeController: UIViewController {
         super.viewDidLoad()
 
 		view.backgroundColor = Props.darkGreen
-		navigationItem.title = "Create Employee"
+		navigationItem.title = "Добавить сотрудника"
 		setupCancelButton()
 		navigationItem.rightBarButtonItem = UIBarButtonItem(
 			title: "Сохранить",

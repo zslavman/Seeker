@@ -99,8 +99,52 @@ extension UIViewController {
 		view.endEditing(true)
 	}
 
+}
+
+
+
+
+//let imagesCache = NSCache<NSString, UIImage>()
+var imagesCache = [String:UIImage]()
+
+class ImageLoader: UIImageView {
+	
+	private var urlString: String?
+	
+	/// download image from url
+	public func loadImage(urlString: String, callback: @escaping (UIImage?) -> Void) {
+		
+		if let imageFromCache = imagesCache[urlString] {
+			callback(imageFromCache)
+			return
+		}
+		self.urlString = urlString
+		//image = nil
+		
+		guard let url = URL(string: urlString) else { return }
+		
+		let request = URLRequest(url: url, cachePolicy: URLRequest.CachePolicy.reloadIgnoringCacheData, timeoutInterval: 10)
+		URLSession.shared.dataTask(with: request) {
+			(data, response, error) in
+			
+			if let error = error {
+				print(error.localizedDescription)
+				return
+			}
+			guard let data = data else { return }
+			if let downlodedImage = UIImage(data: data){
+				imagesCache[urlString] = downlodedImage
+				if urlString != self.urlString { // fix blinking & if self removed by ARC
+					return
+				}
+				callback(downlodedImage)
+			}
+		}.resume()
+	}
+	
 	
 }
+
 
 
 

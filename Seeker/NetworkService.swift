@@ -31,58 +31,7 @@ struct NetworkService {
 			
 			do {
 				let someData = try JSONDecoder().decode([CompanyNet].self, from: data)
-				
-				let privateContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-				privateContext.parent = CoreDataManager.shared.persistentContainer.viewContext
-				
-				// save each company
-				someData.forEach({
-					(com) in
-					
-					let company = CompanyModel(context: privateContext)
-					company.name = com.name
-					
-					// convert date (String -> Date)
-					let dateFormatter = DateFormatter()
-					dateFormatter.dateFormat = "MM/dd/yyyy"
-					let foundedDate = dateFormatter.date(from: com.founded!)
-					
-					company.founded = foundedDate
-					
-					// save each employees of company
-					com.employees?.forEach({
-						(empl) in
-						
-						let employee = Employee(context: privateContext)
-						employee.name = empl.name
-						employee.type = empl.type
-						
-						// filling employee.privateInformation property
-						let privateInformation = PrivateInformation(context: privateContext)
-						let birthdayDate = dateFormatter.date(from: empl.birthday!)
-						
-						privateInformation.birthDay = birthdayDate
-						employee.privateInformation = privateInformation
-						
-						employee.company = company
-					})
-					
-//					do {
-//						try privateContext.save()
-//						try privateContext.parent?.save()
-//					}
-//					catch let err {
-//						print("Failed to save companies", err.localizedDescription)
-//					}
-				})
-				// save context after loop will be better
-				do {
-					try privateContext.save()
-					try privateContext.parent?.save()
-				}
-				catch let err {
-					print("Failed to save companies", err.localizedDescription)
-				}
+				self.parseContext(someData: someData)
 			}
 			catch let err {
 				print("Failed to serealize JSON", err.localizedDescription)
@@ -91,9 +40,62 @@ struct NetworkService {
 	}
 	
 	
+	private func parseContext(someData:[CompanyNet]){
+		
+		let privateContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+		privateContext.parent = CoreDataManager.shared.persistentContainer.viewContext
+		
+		// save each company
+		someData.forEach({
+			(com) in
+			
+			let company = CompanyModel(context: privateContext)
+			company.name = com.name
+			company.imageUrl = com.photoUrl
+			
+			// convert date (String -> Date)
+			let dateFormatter = DateFormatter()
+			dateFormatter.dateFormat = "MM/dd/yyyy"
+			let foundedDate = dateFormatter.date(from: com.founded!)
+			
+			company.founded = foundedDate
+			
+			// save each employees of company
+			com.employees?.forEach({
+				(empl) in
+				
+				let employee = Employee(context: privateContext)
+				employee.name = empl.name
+				employee.type = empl.type
+				
+				// filling employee.privateInformation property
+				let privateInformation = PrivateInformation(context: privateContext)
+				let birthdayDate = dateFormatter.date(from: empl.birthday!)
+				
+				privateInformation.birthDay = birthdayDate
+				employee.privateInformation = privateInformation
+				
+				employee.company = company
+			})
+//			do {
+//				try privateContext.save()
+//				try privateContext.parent?.save()
+//			}
+//			catch let err {
+//				print("Failed to save companies", err.localizedDescription)
+//			}
+		})
+		// better way is to save context after loop
+		do {
+			try privateContext.save()
+			try privateContext.parent?.save()
+		}
+		catch let err {
+			print("Failed to save companies", err.localizedDescription)
+		}
+	}
+	
 }
-
-
 
 
 struct CompanyNet: Decodable {
@@ -102,8 +104,8 @@ struct CompanyNet: Decodable {
 	let photoUrl	:String?
 	let founded		:String?
 	let employees	:[EmployeeNet]?
-	
 }
+
 
 struct EmployeeNet: Decodable {
 	

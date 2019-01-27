@@ -34,18 +34,20 @@ class CoreDataManager {
 	}()
 	
 	
-
-	/// we need to return Error for catch it from caller Class
-	public func createEmployee(employeeName: String, type:String, birthday: Date, company: CompanyModel) -> (Employee?, Error?) {
-		let context = persistentContainer.viewContext
+	public func createEmployee(employeeName	: String,
+							   type			: String,
+							   birthday		: Date,
+							   company		: CompanyModel) -> (Employee?, Error?) {
 		
+		let context = persistentContainer.viewContext
 		// PrivateInformation
-		let information = NSEntityDescription.insertNewObject(forEntityName: ENT.PrivateInformation, into: context) as! PrivateInformation
-		//information.taxId = "123456"
+		// let information = NSEntityDescription.insertNewObject(forEntityName: ENT.PrivateInformation, into: context) as! PrivateInformation
+		let information = PrivateInformation(context: context)
 		information.birthDay = birthday
 		
 		// Employee
-		let employee = NSEntityDescription.insertNewObject(forEntityName: ENT.Employee, into: context) as! Employee
+		// let employee = NSEntityDescription.insertNewObject(forEntityName: ENT.Employee, into: context) as! Employee
+		let employee = Employee(context: context)
 		employee.name = employeeName
 		employee.privateInformation = information
 		employee.company = company
