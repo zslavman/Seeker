@@ -13,7 +13,6 @@
 		563E867721F8EB010005A17A /* EmployeesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563E867621F8EB010005A17A /* EmployeesController.swift */; };
 		563E867921F8F2A80005A17A /* AddEmployeeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563E867821F8F2A80005A17A /* AddEmployeeController.swift */; };
 		563EF18321F4032B007BF390 /* CoreDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 563EF18121F4032B007BF390 /* CoreDataModel.xcdatamodeld */; };
-		563F3A1D21F3AE47005F4FD3 /* CompanyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563F3A1C21F3AE47005F4FD3 /* CompanyModel.swift */; };
 		563F3A1F21F3B1BB005F4FD3 /* AddCompanyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563F3A1E21F3B1BB005F4FD3 /* AddCompanyController.swift */; };
 		563FF9FD21FB794200776B56 /* CoreDataSamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563FF9FC21FB794200776B56 /* CoreDataSamples.swift */; };
 		563FF9FF21FB7FE500776B56 /* CompaniesAutoUpdateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563FF9FE21FB7FE500776B56 /* CompaniesAutoUpdateController.swift */; };
@@ -27,6 +26,7 @@
 		56FD128421F37F8F00003E76 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 56FD128221F37F8F00003E76 /* LaunchScreen.storyboard */; };
 		56FD128D21F3833800003E76 /* Extensions + statics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FD128C21F3833800003E76 /* Extensions + statics.swift */; };
 		56FD128F21F393F000003E76 /* Props.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FD128E21F393F000003E76 /* Props.swift */; };
+		9569ECFF872AE34B665438F5 /* Pods_Seeker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6312DC9BE2DE990C1371929D /* Pods_Seeker.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,7 +36,6 @@
 		563E867621F8EB010005A17A /* EmployeesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployeesController.swift; sourceTree = "<group>"; };
 		563E867821F8F2A80005A17A /* AddEmployeeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEmployeeController.swift; sourceTree = "<group>"; };
 		563EF18221F4032B007BF390 /* CoreDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CoreDataModel.xcdatamodel; sourceTree = "<group>"; };
-		563F3A1C21F3AE47005F4FD3 /* CompanyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyModel.swift; sourceTree = "<group>"; };
 		563F3A1E21F3B1BB005F4FD3 /* AddCompanyController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCompanyController.swift; sourceTree = "<group>"; };
 		563FF9FC21FB794200776B56 /* CoreDataSamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataSamples.swift; sourceTree = "<group>"; };
 		563FF9FE21FB7FE500776B56 /* CompaniesAutoUpdateController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompaniesAutoUpdateController.swift; sourceTree = "<group>"; };
@@ -53,6 +52,9 @@
 		56FD128521F37F8F00003E76 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		56FD128C21F3833800003E76 /* Extensions + statics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extensions + statics.swift"; sourceTree = "<group>"; };
 		56FD128E21F393F000003E76 /* Props.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Props.swift; sourceTree = "<group>"; };
+		6312DC9BE2DE990C1371929D /* Pods_Seeker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Seeker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		66DBCC60347F380876F5AA6A /* Pods-Seeker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Seeker.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Seeker/Pods-Seeker.debug.xcconfig"; sourceTree = "<group>"; };
+		85C8DC0C3CD474C249EB0B63 /* Pods-Seeker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Seeker.release.xcconfig"; path = "Pods/Target Support Files/Pods-Seeker/Pods-Seeker.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,27 +62,38 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9569ECFF872AE34B665438F5 /* Pods_Seeker.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1E2C6B203D5AFD139493CE46 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				66DBCC60347F380876F5AA6A /* Pods-Seeker.debug.xcconfig */,
+				85C8DC0C3CD474C249EB0B63 /* Pods-Seeker.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		2DA6279E93FAA54E8843C540 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6312DC9BE2DE990C1371929D /* Pods_Seeker.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		563F3A2021F3B24A005F4FD3 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				5673D0E2220F39D6007A5905 /* RealmModels */,
 				564E16E321F9DEDD00F51934 /* Companies */,
 				564E16E421F9DEFC00F51934 /* Employees */,
 			);
 			path = Controllers;
-			sourceTree = "<group>";
-		};
-		563F3A2121F3B25D005F4FD3 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				563F3A1C21F3AE47005F4FD3 /* CompanyModel.swift */,
-			);
-			path = Models;
 			sourceTree = "<group>";
 		};
 		564E16E321F9DEDD00F51934 /* Companies */ = {
@@ -113,11 +126,20 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		5673D0E2220F39D6007A5905 /* RealmModels */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = RealmModels;
+			sourceTree = "<group>";
+		};
 		56FD126D21F37F8E00003E76 = {
 			isa = PBXGroup;
 			children = (
 				56FD127821F37F8E00003E76 /* Seeker */,
 				56FD127721F37F8E00003E76 /* Products */,
+				1E2C6B203D5AFD139493CE46 /* Pods */,
+				2DA6279E93FAA54E8843C540 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -133,7 +155,6 @@
 			isa = PBXGroup;
 			children = (
 				56FD128B21F3831300003E76 /* Helpers */,
-				563F3A2121F3B25D005F4FD3 /* Models */,
 				56501D2321F8C3EC00B0E29F /* Views */,
 				563F3A2021F3B24A005F4FD3 /* Controllers */,
 				5646D41E21FBC3BC00AEBDA2 /* NetworkService.swift */,
@@ -165,9 +186,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 56FD128821F37F8F00003E76 /* Build configuration list for PBXNativeTarget "Seeker" */;
 			buildPhases = (
+				BD59A2B56E8A8686ACB79256 /* [CP] Check Pods Manifest.lock */,
 				56FD127221F37F8E00003E76 /* Sources */,
 				56FD127321F37F8E00003E76 /* Frameworks */,
 				56FD127421F37F8E00003E76 /* Resources */,
+				40AB9B50A062AC8E169CC685 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -223,6 +246,47 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		40AB9B50A062AC8E169CC685 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Seeker/Pods-Seeker-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
+				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Seeker/Pods-Seeker-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BD59A2B56E8A8686ACB79256 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Seeker-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		56FD127221F37F8E00003E76 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -242,7 +306,6 @@
 				5645F8FD21FCAC1600909518 /* ComController+NSFetchedResultsControllerDelegate.swift in Sources */,
 				563E867321F8E48F0005A17A /* ComController+AddCompanyProtocol.swift in Sources */,
 				563FF9FD21FB794200776B56 /* CoreDataSamples.swift in Sources */,
-				563F3A1D21F3AE47005F4FD3 /* CompanyModel.swift in Sources */,
 				563E29FA21F435560093C45B /* CoreDataManager.swift in Sources */,
 				563EF18321F4032B007BF390 /* CoreDataModel.xcdatamodeld in Sources */,
 				563F3A1F21F3B1BB005F4FD3 /* AddCompanyController.swift in Sources */,
@@ -379,6 +442,7 @@
 		};
 		56FD128921F37F8F00003E76 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 66DBCC60347F380876F5AA6A /* Pods-Seeker.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -397,6 +461,7 @@
 		};
 		56FD128A21F37F8F00003E76 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 85C8DC0C3CD474C249EB0B63 /* Pods-Seeker.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
