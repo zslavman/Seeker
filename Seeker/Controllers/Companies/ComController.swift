@@ -7,44 +7,17 @@
 //
 
 import UIKit
-import CoreData
+import RealmSwift
 
 class CompaniesController: UITableViewController {
 
-	
-	internal lazy var fetchedResultsController: NSFetchedResultsController<CompanyModel> = {
-		
-		let context = CoreDataManager.shared.persistentContainer.viewContext
-		let request: NSFetchRequest<CompanyModel> = CompanyModel.fetchRequest()
-		request.sortDescriptors = [
-			NSSortDescriptor(key: "name", ascending: true)
-		]
-		
-		let frc = NSFetchedResultsController(
-			fetchRequest		: request,
-			managedObjectContext: context,
-			//sectionNameKeyPath: "name",
-			sectionNameKeyPath	: nil,
-			cacheName			: nil
-		)
-		frc.delegate = self
-		
-		do {
-			try frc.performFetch()
-		} catch let err {
-			print("Failed to performFetch", err.localizedDescription)
-		}
-		
-		return frc
-	}()
 	internal let cellID = "cellID"
-	//internal var companiesArr = [CompanyModel]()
+	internal var companiesArr: Results<RealmCompany>!
 	
-	
-	
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		//companiesArr = CoreDataManager.shared.fetchCompanies()
+		//companiesArr =
 		
 		setupButtonsInNavBar(selector: #selector(onPlusClick))
 		
@@ -87,46 +60,33 @@ class CompaniesController: UITableViewController {
 	}
 	
 	
-	@objc private func onResetClick22(){
-		let request: NSFetchRequest<CompanyModel> = CompanyModel.fetchRequest()
-		//request.predicate = NSPredicate(format: "name CONTAINS %@", "Goordi") // case sensetive filter
+	@objc private func onResetClick(){
 		let context = CoreDataManager.shared.persistentContainer.viewContext
-		let companiesToDelete = try? context.fetch(request)
+		let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: CompanyModel.fetchRequest())
+		batchDeleteRequest.resultType = .resultTypeObjectIDs
 		
-		companiesToDelete?.forEach { (com) in
-			context.delete(com)
-		}
-		try? context.save()
-	}
-	
-	
-		@objc private func onResetClick(){
-			let context = CoreDataManager.shared.persistentContainer.viewContext
-			let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: CompanyModel.fetchRequest())
-			batchDeleteRequest.resultType = .resultTypeObjectIDs
+		do {
+			let batchDeleteResult = try context.execute(batchDeleteRequest) as! NSBatchDeleteResult
+			// Batch updates work directly on the persistent store file instead of going through the managed
+			// object context, so the context doesn't know about them. When you delete the objects by fetching
+			// and then deleting, you're working through the context, so it knows about the changes you're
+			// making (in fact it's performing those changes for you)
 			
-			do {
-				let batchDeleteResult = try context.execute(batchDeleteRequest) as! NSBatchDeleteResult
-				// Batch updates work directly on the persistent store file instead of going through the managed
-				// object context, so the context doesn't know about them. When you delete the objects by fetching
-				// and then deleting, you're working through the context, so it knows about the changes you're
-				// making (in fact it's performing those changes for you)
-				
-				// update context version 1
-				context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy // without this you get an error "Cocoa error 133020"
-				let objectIDArray = batchDeleteResult.result as! [NSManagedObjectID]
-				let changes = [NSDeletedObjectsKey: objectIDArray]
-				NSManagedObjectContext.mergeChanges(fromRemoteContextSave: changes, into: [context])
-				
-				 // update context version 2 (without table animation)
-//				 context.reset()
-//				 try fetchedResultsController.performFetch()
-//				 tableView.reloadData()
-			}
-			catch let err {
-				print("Failed to delete data: \(err.localizedDescription)")
-			}
+			// update context version 1
+			context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy // without this you get an error "Cocoa error 133020"
+			let objectIDArray = batchDeleteResult.result as! [NSManagedObjectID]
+			let changes = [NSDeletedObjectsKey: objectIDArray]
+			NSManagedObjectContext.mergeChanges(fromRemoteContextSave: changes, into: [context])
+			
+			// update context version 2 (without table animation)
+			//				 context.reset()
+			//				 try fetchedResultsController.performFetch()
+			//				 tableView.reloadData()
 		}
+		catch let err {
+			print("Failed to delete data: \(err.localizedDescription)")
+		}
+	}
 	
 	
 	

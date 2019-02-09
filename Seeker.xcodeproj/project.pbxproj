@@ -19,6 +19,8 @@
 		5645F8FD21FCAC1600909518 /* ComController+NSFetchedResultsControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5645F8FC21FCAC1600909518 /* ComController+NSFetchedResultsControllerDelegate.swift */; };
 		5646D41F21FBC3BC00AEBDA2 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5646D41E21FBC3BC00AEBDA2 /* NetworkService.swift */; };
 		56501D2521F8C40E00B0E29F /* CompanyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56501D2421F8C40E00B0E29F /* CompanyCell.swift */; };
+		5673D0E6220F5CD6007A5905 /* EntitiesModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5673D0E5220F5CD6007A5905 /* EntitiesModels.swift */; };
+		5673D0E8220F7BFA007A5905 /* RealmModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5673D0E7220F7BFA007A5905 /* RealmModels.swift */; };
 		569F855C21F3DD260099830A /* Calc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 569F855B21F3DD260099830A /* Calc.swift */; };
 		56FD127A21F37F8E00003E76 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FD127921F37F8E00003E76 /* AppDelegate.swift */; };
 		56FD127C21F37F8E00003E76 /* ComController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FD127B21F37F8E00003E76 /* ComController.swift */; };
@@ -43,6 +45,8 @@
 		5645F8FC21FCAC1600909518 /* ComController+NSFetchedResultsControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ComController+NSFetchedResultsControllerDelegate.swift"; sourceTree = "<group>"; };
 		5646D41E21FBC3BC00AEBDA2 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		56501D2421F8C40E00B0E29F /* CompanyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyCell.swift; sourceTree = "<group>"; };
+		5673D0E5220F5CD6007A5905 /* EntitiesModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntitiesModels.swift; sourceTree = "<group>"; };
+		5673D0E7220F7BFA007A5905 /* RealmModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmModels.swift; sourceTree = "<group>"; };
 		569F855B21F3DD260099830A /* Calc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calc.swift; sourceTree = "<group>"; };
 		56FD127621F37F8E00003E76 /* Seeker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Seeker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		56FD127921F37F8E00003E76 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -89,7 +93,6 @@
 		563F3A2021F3B24A005F4FD3 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				5673D0E2220F39D6007A5905 /* RealmModels */,
 				564E16E321F9DEDD00F51934 /* Companies */,
 				564E16E421F9DEFC00F51934 /* Employees */,
 			);
@@ -126,11 +129,13 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		5673D0E2220F39D6007A5905 /* RealmModels */ = {
+		5673D0E4220F5C92007A5905 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				5673D0E5220F5CD6007A5905 /* EntitiesModels.swift */,
+				5673D0E7220F7BFA007A5905 /* RealmModels.swift */,
 			);
-			path = RealmModels;
+			path = Models;
 			sourceTree = "<group>";
 		};
 		56FD126D21F37F8E00003E76 = {
@@ -155,6 +160,7 @@
 			isa = PBXGroup;
 			children = (
 				56FD128B21F3831300003E76 /* Helpers */,
+				5673D0E4220F5C92007A5905 /* Models */,
 				56501D2321F8C3EC00B0E29F /* Views */,
 				563F3A2021F3B24A005F4FD3 /* Controllers */,
 				5646D41E21FBC3BC00AEBDA2 /* NetworkService.swift */,
@@ -295,7 +301,9 @@
 				56FD127C21F37F8E00003E76 /* ComController.swift in Sources */,
 				56FD127A21F37F8E00003E76 /* AppDelegate.swift in Sources */,
 				56FD128F21F393F000003E76 /* Props.swift in Sources */,
+				5673D0E8220F7BFA007A5905 /* RealmModels.swift in Sources */,
 				563E867921F8F2A80005A17A /* AddEmployeeController.swift in Sources */,
+				5673D0E6220F5CD6007A5905 /* EntitiesModels.swift in Sources */,
 				563E867521F8E5B70005A17A /* ComController+UITableView.swift in Sources */,
 				5646D41F21FBC3BC00AEBDA2 /* NetworkService.swift in Sources */,
 				563FF9FF21FB7FE500776B56 /* CompaniesAutoUpdateController.swift in Sources */,
