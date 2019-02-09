@@ -97,7 +97,7 @@ class Calc {
 func realmInstance() throws -> Realm {
 	let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
 	let realm = try! Realm(configuration: config)
-	print(Realm.Configuration.defaultConfiguration.fileURL!) // local path for Realm Browser
+	//print(Realm.Configuration.defaultConfiguration.fileURL!) // local path for Realm Browser
 	return realm
 }
 

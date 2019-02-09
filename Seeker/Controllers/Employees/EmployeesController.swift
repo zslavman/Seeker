@@ -12,8 +12,8 @@ import CoreData
 class EmployeesController: UITableViewController {
 	
 	
-	public var company: CompanyModel?
-	private var employeesArr = [[Employee]]()
+	public var company: RealmCompany?
+	private var employeesArr = [[RealmEmployee]]()
 	private let cellID = "cellID"
 	
 	
@@ -21,7 +21,6 @@ class EmployeesController: UITableViewController {
 		super.viewWillAppear(animated)
 		
 		navigationItem.title = company?.name
-		
 	}
 	
 	override func viewDidLoad() {
@@ -38,7 +37,7 @@ class EmployeesController: UITableViewController {
 	@objc private func onPlusClick(){
 		let addEmployeeController = AddEmployeeController()
 		addEmployeeController.delegate = self
-		addEmployeeController.company = company
+		//addEmployeeController.company = company
 		let navcontroller = UINavigationController(rootViewController: addEmployeeController)
 		present(navcontroller, animated: true, completion: nil)
 	}
@@ -46,13 +45,13 @@ class EmployeesController: UITableViewController {
 	
 	
 	private func fetchEmployees(){
-		guard let employeesForCurrentCompany = company?.employees?.allObjects as? [Employee] else { return }
+		//guard let employeesForCurrentCompany = company?.employees?.allObjects as? [Employee] else { return }
 		employeesArr.removeAll()
 		
 		// executive, managers, staff
-		for (index, _) in AddEmployeeController.segmentVars.enumerated() {
-			employeesArr.append(employeesForCurrentCompany.filter{$0.type == AddEmployeeController.segmentVars[index]})
-		}
+//		for (index, _) in AddEmployeeController.segmentVars.enumerated() {
+//			employeesArr.append(employeesForCurrentCompany.filter{$0.type == AddEmployeeController.segmentVars[index]})
+//		}
 	}
 	
 	
@@ -92,10 +91,10 @@ class EmployeesController: UITableViewController {
 		cell.textLabel?.textColor = .white
 		cell.backgroundColor = Props.green3
 		
-		if let birthday = employee.privateInformation?.birthDay {
-			let str2 = "  #  \(Calc.convertDate(founded: birthday))"
-			cell.textLabel?.attributedText = Calc.twoColorString(strings: (employee.name!, str2), colors: (UIColor.white, Props.green4))
-		}
+//		if let birthday = employee.privateInformation?.birthDay {
+//			let str2 = "  #  \(Calc.convertDate(founded: birthday))"
+//			cell.textLabel?.attributedText = Calc.twoColorString(strings: (employee.name!, str2), colors: (UIColor.white, Props.green4))
+//		}
 		return cell
 	}
 	
@@ -109,7 +108,7 @@ extension EmployeesController: AddEmployeeDelegate {
 		guard let section = AddEmployeeController.segmentVars.index(of: employee.type!) else { return }
 		let row = employeesArr[section].count
 		
-		employeesArr[section].append(employee)
+//		employeesArr[section].append(employee)
 		
 		let insertionIndexPath = IndexPath(row: row, section: section)
 		tableView.insertRows(at: [insertionIndexPath], with: .top)

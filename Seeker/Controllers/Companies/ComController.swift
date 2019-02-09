@@ -17,21 +17,23 @@ class CompaniesController: UITableViewController {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		//companiesArr =
-		
+		fetchRealmData()
 		setupButtonsInNavBar(selector: #selector(onPlusClick))
-		
-		// Fixing black artifact
-		navigationController?.view.backgroundColor = Props.green3
-		
+		navigationController?.view.backgroundColor = Props.green3 // Fixing black artifact
 		navigationItem.title = "Компании"
 		navigationItem.leftBarButtonItem = UIBarButtonItem(
 			title: "Удалить все",
 			style: .plain,
 			target: self,
-			action: #selector(onResetClick)
+			action: #selector(onRemoveAll)
 		)
 		setupTableStyle()
+	}
+	
+	
+	private func fetchRealmData(){
+		let realm = try! realmInstance()
+		companiesArr = realm.objects(RealmCompany.self)
 	}
 	
 	
@@ -60,59 +62,15 @@ class CompaniesController: UITableViewController {
 	}
 	
 	
-	@objc private func onResetClick(){
-		let context = CoreDataManager.shared.persistentContainer.viewContext
-		let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: CompanyModel.fetchRequest())
-		batchDeleteRequest.resultType = .resultTypeObjectIDs
-		
-		do {
-			let batchDeleteResult = try context.execute(batchDeleteRequest) as! NSBatchDeleteResult
-			// Batch updates work directly on the persistent store file instead of going through the managed
-			// object context, so the context doesn't know about them. When you delete the objects by fetching
-			// and then deleting, you're working through the context, so it knows about the changes you're
-			// making (in fact it's performing those changes for you)
-			
-			// update context version 1
-			context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy // without this you get an error "Cocoa error 133020"
-			let objectIDArray = batchDeleteResult.result as! [NSManagedObjectID]
-			let changes = [NSDeletedObjectsKey: objectIDArray]
-			NSManagedObjectContext.mergeChanges(fromRemoteContextSave: changes, into: [context])
-			
-			// update context version 2 (without table animation)
-			//				 context.reset()
-			//				 try fetchedResultsController.performFetch()
-			//				 tableView.reloadData()
-		}
-		catch let err {
-			print("Failed to delete data: \(err.localizedDescription)")
+	@objc private func onRemoveAll(){
+		let realm = try! realmInstance()
+		try! realm.write {
+			let count = tableView.numberOfRows(inSection: 0)
+			let rows = (0..<count).map { IndexPath(row: $0, section: 0)}
+			companiesArr.realm?.deleteAll()
+			tableView.deleteRows(at: rows, with: .right)
 		}
 	}
-	
-	
-	
-//	@objc private func onResetClick(){
-//		guard companiesArr.count > 0 else { return }
-//
-//		let context = CoreDataManager.shared.persistentContainer.viewContext
-//		let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: CompanyModel.fetchRequest())
-//
-//		do {
-//			try context.execute(batchDeleteRequest)
-//
-//			var indexPathToRemove = [IndexPath]()
-//
-//			for (index, _) in companiesArr.enumerated() {
-//				let indexPath = IndexPath(row: index, section: 0)
-//				indexPathToRemove.append(indexPath)
-//			}
-//			companiesArr.removeAll()
-//			tableView.deleteRows(at: indexPathToRemove, with: .right)
-//		}
-//		catch let err {
-//			print("Failed to delete data: \(err.localizedDescription)")
-//		}
-//	}
-	
 	
 	
 	@objc private func onPlusClick(){
@@ -127,13 +85,36 @@ class CompaniesController: UITableViewController {
 	internal func onEditAction(action: UITableViewRowAction, indexPath:IndexPath){
 		let editCompanyController = AddCompanyController()
 		editCompanyController.companiesControllerDelegate = self
-		editCompanyController.company = fetchedResultsController.object(at: indexPath)
+		editCompanyController.company = companiesArr[indexPath.row]
 		let navController = UINavigationController(rootViewController: editCompanyController)
 		present(navController, animated: true, completion: nil)
 	}
 	
 }
 
+
+
+
+extension CompaniesController: AddCompanyProtocol{
+	func addCompany(company: CompanyEntity) {
+		let realmCompanyObject = RealmCompany(entity: company)
+		let indexPath = IndexPath(row: companiesArr.count, section: 0)
+		let realm = try! realmInstance()
+		try! realm.write {
+			companiesArr.realm?.add(realmCompanyObject)
+			tableView.insertRows(at: [indexPath], with: .top)
+		}
+	}
+	
+	/// save core data after editing company (basically, this method no longer need)
+	func didEditCompany(company: RealmCompany) {
+		let realm = try! realmInstance()
+		try! realm.write {
+			companiesArr.realm?.add(company, update: true)
+			tableView.rectForRow(at: <#T##IndexPath#>)
+		}
+	}
+}
 
 
 

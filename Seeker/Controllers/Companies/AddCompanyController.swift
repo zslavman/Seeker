@@ -11,15 +11,15 @@ import CoreData
 
 
 protocol AddCompanyProtocol:class {
-	func addCompany(name:String, fDate:Date, imgData:Data?)
-	func didEditCompany(company: CompanyModel)
+	func addCompany(company: CompanyEntity)
+	func didEditCompany(company: RealmCompany)
 }
 	
 
 class AddCompanyController: UIViewController {
 
 	weak public var companiesControllerDelegate: AddCompanyProtocol?
-	public var company:CompanyModel? {
+	public var company: RealmCompany? {
 		didSet{
 			nameInputField.text = company?.name
 			if let founded = company?.founded {
@@ -75,13 +75,9 @@ class AddCompanyController: UIViewController {
 	
     override func viewDidLoad() {
         super.viewDidLoad()
-
 		setupUI()
-
 		view.backgroundColor = Props.darkGreen
-		
 		setupCancelButton()
-		
 		navigationItem.rightBarButtonItem = UIBarButtonItem(
 			title: "Сохранить",
 			style: .plain,
@@ -103,6 +99,7 @@ class AddCompanyController: UIViewController {
 		navigationItem.title = company == nil ? "Добавить компанию" : "Редакт. компанию"
 	}
 	
+	
 	@objc private func onSaveClick(){
 		if company == nil {
 			createCompany()
@@ -114,7 +111,7 @@ class AddCompanyController: UIViewController {
 	
 	
 	@objc private func onPhotoClick(){
-		DispatchQueue.main.async { // ??
+		DispatchQueue.main.async { // ?? doesn't work
 			self.view.endEditing(true)
 		}
 		let imagePickerController = UIImagePickerController()
@@ -137,12 +134,10 @@ class AddCompanyController: UIViewController {
 			imgData = UIImageJPEGRepresentation(image, 0.6)
 		}
 		
+		let newCompany = CompanyEntity(founded: datePicker.date, imageData: imgData, imageUrl: nil, name: nameInputField.text!)
+		
 		dismiss(animated: true, completion: {
-			self.companiesControllerDelegate?.addCompany(
-				name	: self.nameInputField.text!,
-				fDate	: self.datePicker.date,
-				imgData	: imgData
-			)
+			self.companiesControllerDelegate?.addCompany(company: newCompany)
 		})
 	}
 
@@ -151,9 +146,6 @@ class AddCompanyController: UIViewController {
 	private func editAndSaveCompanyChanges(){
 		guard let name = Calc.checkBeforeUse(field: nameInputField) else { return }
 	
-		// if change company before dismiss - all wil be OK, but you can't see
-		// animation of change in tableView. It is because fetchedResultsController
-		// reload views immediately
 		dismiss(animated: true, completion: {
 			DispatchQueue.main.async { // sometimes name doesn't change
 				self.company?.name = name

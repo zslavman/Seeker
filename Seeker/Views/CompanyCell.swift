@@ -11,7 +11,7 @@ import UIKit
 
 class CompanyCell: UITableViewCell {
 	
-	public var company: CompanyModel? {
+	public var company: RealmCompany? {
 		didSet {
 			setValues()
 		}
