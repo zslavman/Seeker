@@ -13,7 +13,7 @@ class CompaniesController: UITableViewController {
 
 	internal let cellID = "cellID"
 	internal var companiesArr: Results<RealmCompany>!
-	
+	internal var companyToUpdate: RealmCompany!// every time when you will edit company, you shoud save it here
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -86,12 +86,12 @@ class CompaniesController: UITableViewController {
 		let editCompanyController = AddCompanyController()
 		editCompanyController.companiesControllerDelegate = self
 		editCompanyController.company = companiesArr[indexPath.row]
+		companyToUpdate = companiesArr[indexPath.row]
 		let navController = UINavigationController(rootViewController: editCompanyController)
 		present(navController, animated: true, completion: nil)
 	}
 	
 }
-
 
 
 
@@ -106,13 +106,14 @@ extension CompaniesController: AddCompanyProtocol{
 		}
 	}
 	
-	/// save core data after editing company (basically, this method no longer need)
-	func didEditCompany(company: RealmCompany) {
-		let realm = try! realmInstance()
-		try! realm.write {
-			companiesArr.realm?.add(company, update: true)
-			tableView.rectForRow(at: <#T##IndexPath#>)
+	func didEditCompany() {
+		if let index = companiesArr.index(of: companyToUpdate) {
+			let indexPath = IndexPath(row: index, section: 0)
+			DispatchQueue.main.async {
+				self.tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.fade)
+			}
 		}
+		
 	}
 }
 

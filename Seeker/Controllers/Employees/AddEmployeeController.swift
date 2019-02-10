@@ -7,17 +7,18 @@
 //
 
 import UIKit
+import RealmSwift
 
 protocol AddEmployeeDelegate:class {
-	func updateEmployes(employee: Employee)
+	func updateEmployes(employee: RealmEmployee)
 }
 
 
 class AddEmployeeController: UIViewController {
 
-	public weak var delegate:AddEmployeeDelegate?
-	public var company: CompanyModel!
-	// for change ordering do it in two arrays
+	public weak var delegate: AddEmployeeDelegate?
+	public var company: RealmCompany!
+	// if need to change order - do it in next two arrays
 	public static let segmentVars = [
 		"executive",
 		"managers",
@@ -29,8 +30,6 @@ class AddEmployeeController: UIViewController {
 		"Персонал"
 	]
 	private let dFormat = "dd.MM.yyyy"
-	
-	
 	private let nameLabel: UILabelWithEdges = {
 		let label = UILabelWithEdges()
 		label.text = "Имя"
@@ -91,7 +90,6 @@ class AddEmployeeController: UIViewController {
 	
     override func viewDidLoad() {
         super.viewDidLoad()
-
 		view.backgroundColor = Props.darkGreen
 		navigationItem.title = "Добавить сотрудника"
 		setupCancelButton()
@@ -147,7 +145,6 @@ class AddEmployeeController: UIViewController {
 			present(alertController, animated: true)
 			return
 		}
-		
 		let dateFormatter = DateFormatter()
 		dateFormatter.dateFormat = dFormat
 		
@@ -156,18 +153,20 @@ class AddEmployeeController: UIViewController {
 			present(alertController, animated: true)
 			return
 		}
-		
 		let type = AddEmployeeController.segmentVars[typeSegmentedControl.selectedSegmentIndex]
+		// create new EmployeeEntity
+		let emplEnt = EmployeeEntity(name: nameInput.text!, type: type)
+		let newRealmEmpl = RealmEmployee(entity: emplEnt)
+		// create new nested entity newRealmEmpl.privateInformation
+		let privEnt = PrivateInformationEntity(birthDay: birthDate, taxId: "")
+		let newRealInf = RealmPrivateInformation(entity: privEnt)
+		newRealmEmpl.privateInformation = newRealInf
 		
-		let tuple = CoreDataManager.shared.createEmployee(
-			employeeName: nameInput.text!,
-			type		: type,
-			birthday	: birthDate,
-			company		: company
-		)
-		if tuple.1 == nil {
+		let realm = try! realmInstance()
+		try! realm.write {
+			company.employees.append(newRealmEmpl)
 			dismiss(animated: true, completion: {
-				self.delegate?.updateEmployes(employee: tuple.0!)
+				self.delegate?.updateEmployes(employee: newRealmEmpl)
 			})
 		}
 	}

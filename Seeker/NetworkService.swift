@@ -43,7 +43,7 @@ struct NetworkService {
 	private func parseContext(someData:[CompanyNet]){
 		
 		let privateContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-		privateContext.parent = CoreDataManager.shared.persistentContainer.viewContext
+		//privateContext.parent = CoreDataManager.shared.persistentContainer.viewContext
 		
 		// save each company
 		someData.forEach({
@@ -77,15 +77,7 @@ struct NetworkService {
 				
 				employee.company = company
 			})
-//			do {
-//				try privateContext.save()
-//				try privateContext.parent?.save()
-//			}
-//			catch let err {
-//				print("Failed to save companies", err.localizedDescription)
-//			}
 		})
-		// better way is to save context after loop
 		do {
 			try privateContext.save()
 			try privateContext.parent?.save()
@@ -99,7 +91,6 @@ struct NetworkService {
 
 
 struct CompanyNet: Decodable {
-	
 	let name		:String?
 	let photoUrl	:String?
 	let founded		:String?
@@ -108,7 +99,6 @@ struct CompanyNet: Decodable {
 
 
 struct EmployeeNet: Decodable {
-	
 	let name		:String?
 	let birthday	:String?
 	let type		:String?

@@ -7,12 +7,10 @@
 //
 
 import UIKit
-import CoreData
-
 
 protocol AddCompanyProtocol:class {
 	func addCompany(company: CompanyEntity)
-	func didEditCompany(company: RealmCompany)
+	func didEditCompany()
 }
 	
 
@@ -145,17 +143,22 @@ class AddCompanyController: UIViewController {
 	/// edit company
 	private func editAndSaveCompanyChanges(){
 		guard let name = Calc.checkBeforeUse(field: nameInputField) else { return }
-	
-		dismiss(animated: true, completion: {
-			DispatchQueue.main.async { // sometimes name doesn't change
-				self.company?.name = name
-				self.company?.founded = self.datePicker.date
-				if let image = self.photoPicker.image, self.isImageInstalled {
-					let imageData = UIImageJPEGRepresentation(image, 0.6)
-					self.company?.imageData = imageData
-				}
-				self.companiesControllerDelegate?.didEditCompany(company: self.company!)
+		
+		var maybeData: Data?
+		if let image = self.photoPicker.image, self.isImageInstalled {
+			let imageData = UIImageJPEGRepresentation(image, 0.6)
+			maybeData = imageData
+		}
+		if let company = company {
+			let realm = try! realmInstance()
+			try! realm.write {
+				company.founded = datePicker.date
+				company.imageData = maybeData
+				company.name = name
 			}
+		}
+		dismiss(animated: true, completion: {
+			self.companiesControllerDelegate?.didEditCompany()
 		})
 	}
 

@@ -15,10 +15,11 @@ class RealmCompany: Object {
 	@objc dynamic var imageUrl: String?
 	@objc dynamic var membership: String = String()
 	@objc dynamic var name: String?
+	@objc dynamic var id = UUID().uuidString
 	let employees = List<RealmEmployee>()
 	
 	override class func primaryKey() -> String? {
-		return "name"
+		return "id"
 	}
 	
 	convenience init(entity: CompanyEntity) {
@@ -31,15 +32,16 @@ class RealmCompany: Object {
 	}
 }
 
+
 class RealmEmployee: Object {
 	@objc dynamic var name: String?
 	@objc dynamic var type: String?
+	@objc dynamic var id: String = UUID().uuidString
+	@objc dynamic var privateInformation: RealmPrivateInformation?
 	var company = LinkingObjects(fromType: RealmCompany.self, property: "employees")
-	//var privateInformation = LinkingObjects(fromType: RealmPrivateInformation.self, property: "employee")
-	var privateInformation: RealmPrivateInformation?
 	
 	override class func primaryKey() -> String? {
-		return "name"
+		return "id"
 	}
 	
 	convenience init(entity: EmployeeEntity) {
@@ -49,11 +51,15 @@ class RealmEmployee: Object {
 	}
 }
 
+
 class RealmPrivateInformation: Object {
-	@objc dynamic var birthDay: String?
+	@objc dynamic var birthDay: Date?
 	@objc dynamic var taxId: String?
-//	var employee = LinkingObjects(fromType: RealmEmployee.self, property: "privateInformation")
-	var employee: RealmEmployee?
+	@objc dynamic var id: String = UUID().uuidString
+	
+	override class func primaryKey() -> String? {
+		return "id"
+	}
 	
 	convenience init(entity: PrivateInformationEntity) {
 		self.init()

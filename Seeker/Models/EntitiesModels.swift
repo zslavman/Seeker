@@ -17,13 +17,13 @@ struct CompanyEntity {
 }
 
 struct EmployeeEntity {
-	let name: String
-	let type: String
+	let name: String?
+	let type: String?
 }
 
 struct PrivateInformationEntity {
-	let birthDay: String
-	let taxId: String
+	let birthDay: Date?
+	let taxId: String?
 }
 
 

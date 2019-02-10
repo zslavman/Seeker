@@ -7,13 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		563E29FA21F435560093C45B /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563E29F921F435560093C45B /* CoreDataManager.swift */; };
 		563E867521F8E5B70005A17A /* ComController+UITableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563E867421F8E5B70005A17A /* ComController+UITableView.swift */; };
 		563E867721F8EB010005A17A /* EmployeesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563E867621F8EB010005A17A /* EmployeesController.swift */; };
 		563E867921F8F2A80005A17A /* AddEmployeeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563E867821F8F2A80005A17A /* AddEmployeeController.swift */; };
 		563EF18321F4032B007BF390 /* CoreDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 563EF18121F4032B007BF390 /* CoreDataModel.xcdatamodeld */; };
 		563F3A1F21F3B1BB005F4FD3 /* AddCompanyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563F3A1E21F3B1BB005F4FD3 /* AddCompanyController.swift */; };
-		563FF9FD21FB794200776B56 /* CoreDataSamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563FF9FC21FB794200776B56 /* CoreDataSamples.swift */; };
 		5646D41F21FBC3BC00AEBDA2 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5646D41E21FBC3BC00AEBDA2 /* NetworkService.swift */; };
 		56501D2521F8C40E00B0E29F /* CompanyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56501D2421F8C40E00B0E29F /* CompanyCell.swift */; };
 		5673D0E6220F5CD6007A5905 /* EntitiesModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5673D0E5220F5CD6007A5905 /* EntitiesModels.swift */; };
@@ -29,13 +27,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		563E29F921F435560093C45B /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		563E867421F8E5B70005A17A /* ComController+UITableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ComController+UITableView.swift"; sourceTree = "<group>"; };
 		563E867621F8EB010005A17A /* EmployeesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployeesController.swift; sourceTree = "<group>"; };
 		563E867821F8F2A80005A17A /* AddEmployeeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEmployeeController.swift; sourceTree = "<group>"; };
 		563EF18221F4032B007BF390 /* CoreDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CoreDataModel.xcdatamodel; sourceTree = "<group>"; };
 		563F3A1E21F3B1BB005F4FD3 /* AddCompanyController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCompanyController.swift; sourceTree = "<group>"; };
-		563FF9FC21FB794200776B56 /* CoreDataSamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataSamples.swift; sourceTree = "<group>"; };
 		5645F8FB21FCA15800909518 /* CoreDataModel v1.1.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "CoreDataModel v1.1.xcdatamodel"; sourceTree = "<group>"; };
 		5646D41E21FBC3BC00AEBDA2 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		56501D2421F8C40E00B0E29F /* CompanyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyCell.swift; sourceTree = "<group>"; };
@@ -155,7 +151,6 @@
 				56501D2321F8C3EC00B0E29F /* Views */,
 				563F3A2021F3B24A005F4FD3 /* Controllers */,
 				5646D41E21FBC3BC00AEBDA2 /* NetworkService.swift */,
-				563E29F921F435560093C45B /* CoreDataManager.swift */,
 				563EF18121F4032B007BF390 /* CoreDataModel.xcdatamodeld */,
 				56FD127921F37F8E00003E76 /* AppDelegate.swift */,
 				56FD128521F37F8F00003E76 /* Info.plist */,
@@ -171,7 +166,6 @@
 				56FD128C21F3833800003E76 /* Extensions + statics.swift */,
 				569F855B21F3DD260099830A /* Calc.swift */,
 				56FD128E21F393F000003E76 /* Props.swift */,
-				563FF9FC21FB794200776B56 /* CoreDataSamples.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -301,8 +295,6 @@
 				56FD128D21F3833800003E76 /* Extensions + statics.swift in Sources */,
 				569F855C21F3DD260099830A /* Calc.swift in Sources */,
 				56501D2521F8C40E00B0E29F /* CompanyCell.swift in Sources */,
-				563FF9FD21FB794200776B56 /* CoreDataSamples.swift in Sources */,
-				563E29FA21F435560093C45B /* CoreDataManager.swift in Sources */,
 				563EF18321F4032B007BF390 /* CoreDataModel.xcdatamodeld in Sources */,
 				563F3A1F21F3B1BB005F4FD3 /* AddCompanyController.swift in Sources */,
 			);
