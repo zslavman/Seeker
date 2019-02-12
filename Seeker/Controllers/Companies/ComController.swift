@@ -35,8 +35,9 @@ class CompaniesController: UITableViewController {
 	
 	private func fetchRealmData(){
 		let realm = try! realmInstance()
-		companiesArr = realm.objects(RealmCompany.self)
-		print("companiesArr.count = \(companiesArr.count)")
+		let tempArr = realm.objects(RealmCompany.self)
+		print("tempArr.count = \(tempArr.count)")
+		companiesArr = tempArr
 	}
 	
 	
@@ -92,6 +93,8 @@ class CompaniesController: UITableViewController {
 	
 	
 	@objc private func onPlusClick(){
+		onRefresh() // working fine allways!!! problem with refreshControl???
+		return
 		let addCompanyController = AddCompanyController()
 		let navController = UINavigationController(rootViewController: addCompanyController)
 		

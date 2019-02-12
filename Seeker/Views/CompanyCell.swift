@@ -90,7 +90,6 @@ class CompanyCell: UITableViewCell {
 		companyPhoto.clipsToBounds = true
 		
 		//TODO: fix writing if company deleted before all images will download
-		// The Realm is already in a write transaction' - если добавить картинку в компанию!!
 		guard let company = company, saveToRealm else { return }
 		
 		let realm = try! realmInstance()
