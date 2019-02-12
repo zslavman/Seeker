@@ -49,7 +49,12 @@ class CompaniesController: UITableViewController {
 	
 	
 	@objc internal func onRefresh(){
-		NetworkService.shared.downloadCompaniesFromServer()
+		NetworkService.shared.downloadCompaniesFromServer(callback: {
+			DispatchQueue.main.async {
+				self.fetchRealmData()
+				self.animateTableWithSections()
+			}
+		})
 		refreshControl?.endRefreshing()
 	}
 	
@@ -89,6 +94,13 @@ class CompaniesController: UITableViewController {
 		companyToUpdate = companiesArr[indexPath.row]
 		let navController = UINavigationController(rootViewController: editCompanyController)
 		present(navController, animated: true, completion: nil)
+	}
+	
+	private func animateTableWithSections(){
+		tableView.reloadData()
+		let range = NSMakeRange(0, tableView.numberOfSections)
+		let sections = NSIndexSet(indexesIn: range)
+		tableView.reloadSections(sections as IndexSet, with: .bottom)
 	}
 	
 }

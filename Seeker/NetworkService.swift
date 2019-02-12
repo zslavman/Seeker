@@ -16,10 +16,8 @@ struct NetworkService {
 	private let json = "https://drive.google.com/uc?export=download&id=1Rbk49RDjWffwbs-nMA9WaMjsaOAKWg_r"
 
 	
-	public func downloadCompaniesFromServer(){
-		
+	public func downloadCompaniesFromServer(callback: @escaping () -> ()){
 		guard let jsonURL = URL(string: json) else { return }
-		
 		URLSession.shared.dataTask(with: jsonURL) {
 			(data, response, error) in
 			if let error = error {
@@ -27,11 +25,11 @@ struct NetworkService {
 				return
 			}
 			guard let data = data else { return }
-//			let str = String(data: data, encoding: String.Encoding.utf8)
-			
+			// let str = String(data: data, encoding: String.Encoding.utf8)
 			do {
 				let someData = try JSONDecoder().decode([CompanyNet].self, from: data)
 				self.parseContext(someData: someData)
+				callback()
 			}
 			catch let err {
 				print("Failed to serealize JSON", err.localizedDescription)
@@ -41,51 +39,35 @@ struct NetworkService {
 	
 	
 	private func parseContext(someData:[CompanyNet]){
-		
-		let privateContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-		//privateContext.parent = CoreDataManager.shared.persistentContainer.viewContext
-		
+		let realm = try! realmInstance()
 		// save each company
 		someData.forEach({
 			(com) in
-			
-			let company = CompanyModel(context: privateContext)
-			company.name = com.name
-			company.imageUrl = com.photoUrl
-			
-			// convert date (String -> Date)
 			let dateFormatter = DateFormatter()
 			dateFormatter.dateFormat = "MM/dd/yyyy"
 			let foundedDate = dateFormatter.date(from: com.founded!)
-			
-			company.founded = foundedDate
+		
+			let realmCompany = RealmCompany(founded: foundedDate, imageData: nil, imageUrl: com.photoUrl, name: com.name)
 			
 			// save each employees of company
 			com.employees?.forEach({
 				(empl) in
+				// create new Employee
+				let newRealmEmpl = RealmEmployee(name: empl.name, type: empl.type)
 				
-				let employee = Employee(context: privateContext)
-				employee.name = empl.name
-				employee.type = empl.type
-				
-				// filling employee.privateInformation property
-				let privateInformation = PrivateInformation(context: privateContext)
+				// create new nested entity newRealmEmpl.privateInformation
 				let birthdayDate = dateFormatter.date(from: empl.birthday!)
-				
-				privateInformation.birthDay = birthdayDate
-				employee.privateInformation = privateInformation
-				
-				employee.company = company
+				let realmInf = RealmPrivateInformation(birthDay: birthdayDate)
+				newRealmEmpl.privateInformation = realmInf
+
+				realmCompany.employees.append(newRealmEmpl)
 			})
+			try! realm.write {
+				realm.add(realmCompany)
+			}
 		})
-		do {
-			try privateContext.save()
-			try privateContext.parent?.save()
-		}
-		catch let err {
-			print("Failed to save companies", err.localizedDescription)
-		}
 	}
+	
 	
 }
 

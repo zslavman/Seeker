@@ -30,6 +30,15 @@ class RealmCompany: Object {
 		self.membership = entity.membership
 		self.name = entity.name
 	}
+	
+	convenience init(founded: Date?, imageData: Data?, imageUrl: String?, name: String?, membership: String = "Brotherhood of Steel") {
+		self.init()
+		self.founded = founded
+		self.imageData = imageData
+		self.imageUrl = imageUrl
+		self.name = name
+		self.membership = membership
+	}
 }
 
 
@@ -49,6 +58,12 @@ class RealmEmployee: Object {
 		self.name = entity.name
 		self.type = entity.type
 	}
+	
+	convenience init(name: String?, type: String?){
+		self.init()
+		self.name = name
+		self.type = type
+	}
 }
 
 
@@ -66,7 +81,22 @@ class RealmPrivateInformation: Object {
 		self.birthDay = entity.birthDay
 		self.taxId = entity.taxId
 	}
+	
+	convenience init(birthDay: Date?, taxId: String = "someID") {
+		self.init()
+		self.birthDay = birthDay
+		self.taxId = taxId
+	}
 }
+
+
+
+
+
+
+
+
+
 
 
 

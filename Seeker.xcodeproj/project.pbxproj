@@ -10,7 +10,7 @@
 		563E867521F8E5B70005A17A /* ComController+UITableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563E867421F8E5B70005A17A /* ComController+UITableView.swift */; };
 		563E867721F8EB010005A17A /* EmployeesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563E867621F8EB010005A17A /* EmployeesController.swift */; };
 		563E867921F8F2A80005A17A /* AddEmployeeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563E867821F8F2A80005A17A /* AddEmployeeController.swift */; };
-		563EF18321F4032B007BF390 /* CoreDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 563EF18121F4032B007BF390 /* CoreDataModel.xcdatamodeld */; };
+		563EF18321F4032B007BF390 /* NOT_USED.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 563EF18121F4032B007BF390 /* NOT_USED.xcdatamodeld */; };
 		563F3A1F21F3B1BB005F4FD3 /* AddCompanyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563F3A1E21F3B1BB005F4FD3 /* AddCompanyController.swift */; };
 		5646D41F21FBC3BC00AEBDA2 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5646D41E21FBC3BC00AEBDA2 /* NetworkService.swift */; };
 		56501D2521F8C40E00B0E29F /* CompanyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56501D2421F8C40E00B0E29F /* CompanyCell.swift */; };
@@ -150,10 +150,10 @@
 				5673D0E4220F5C92007A5905 /* Models */,
 				56501D2321F8C3EC00B0E29F /* Views */,
 				563F3A2021F3B24A005F4FD3 /* Controllers */,
-				5646D41E21FBC3BC00AEBDA2 /* NetworkService.swift */,
-				563EF18121F4032B007BF390 /* CoreDataModel.xcdatamodeld */,
 				56FD127921F37F8E00003E76 /* AppDelegate.swift */,
+				5646D41E21FBC3BC00AEBDA2 /* NetworkService.swift */,
 				56FD128521F37F8F00003E76 /* Info.plist */,
+				563EF18121F4032B007BF390 /* NOT_USED.xcdatamodeld */,
 				56FD128221F37F8F00003E76 /* LaunchScreen.storyboard */,
 				56FD128021F37F8F00003E76 /* Assets.xcassets */,
 			);
@@ -295,7 +295,7 @@
 				56FD128D21F3833800003E76 /* Extensions + statics.swift in Sources */,
 				569F855C21F3DD260099830A /* Calc.swift in Sources */,
 				56501D2521F8C40E00B0E29F /* CompanyCell.swift in Sources */,
-				563EF18321F4032B007BF390 /* CoreDataModel.xcdatamodeld in Sources */,
+				563EF18321F4032B007BF390 /* NOT_USED.xcdatamodeld in Sources */,
 				563F3A1F21F3B1BB005F4FD3 /* AddCompanyController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -490,14 +490,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		563EF18121F4032B007BF390 /* CoreDataModel.xcdatamodeld */ = {
+		563EF18121F4032B007BF390 /* NOT_USED.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
 				5645F8FB21FCA15800909518 /* CoreDataModel v1.1.xcdatamodel */,
 				563EF18221F4032B007BF390 /* CoreDataModel.xcdatamodel */,
 			);
 			currentVersion = 5645F8FB21FCA15800909518 /* CoreDataModel v1.1.xcdatamodel */;
-			path = CoreDataModel.xcdatamodeld;
+			path = NOT_USED.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

@@ -89,10 +89,15 @@ class CompanyCell: UITableViewCell {
 		companyPhoto.layer.borderWidth = 1
 		companyPhoto.clipsToBounds = true
 		
-		//TODO: save image to Core Data
-//		company?.imageUrl = nil
-//		company?.imageData = UIImageJPEGRepresentation(img, 0.6)
-//		CoreDataManager.shared.saveContext()
+		//TODO: fix writing if company deleted before all images will download
+		guard let company = company else { return }
+		
+		let realm = try! realmInstance()
+		try! realm.write {
+			company.imageUrl = nil
+			company.imageData = UIImageJPEGRepresentation(img, 0.6)
+		}
+		
 	}
 	
 	
