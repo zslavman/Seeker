@@ -13,13 +13,15 @@ class CompaniesController: UITableViewController {
 
 	internal let cellID = "cellID"
 	internal var companiesArr: Results<RealmCompany>!
-	internal var companyToUpdate: RealmCompany!// every time when you will edit company, you shoud save it here
+	internal var companyToUpdate: RealmCompany!// every time when you will edit company, you should save it here
+	private var refreshingNow: Bool = false
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		extendedLayoutIncludesOpaqueBars = true // fix refreshControl glich
 		fetchRealmData()
 		setupButtonsInNavBar(selector: #selector(onPlusClick))
-		navigationController?.view.backgroundColor = Props.green3 // Fixing black artifact
+		navigationController?.view.backgroundColor = Props.green3 // fix black artifact
 		navigationItem.title = "Компании"
 		navigationItem.leftBarButtonItem = UIBarButtonItem(
 			title: "Удалить все",
@@ -34,28 +36,38 @@ class CompaniesController: UITableViewController {
 	private func fetchRealmData(){
 		let realm = try! realmInstance()
 		companiesArr = realm.objects(RealmCompany.self)
+		print("companiesArr.count = \(companiesArr.count)")
 	}
 	
 	
 	internal func addRefreshControl(){
-		if refreshControl != nil {
-			return
+		if refreshControl == nil {
+			refreshControl = UIRefreshControl()
+			refreshControl!.tintColor = .white
 		}
-		let customRefreshControl = UIRefreshControl()
-		customRefreshControl.tintColor = .white
-		customRefreshControl.addTarget(self, action: #selector(onRefresh), for: .valueChanged)
-		self.refreshControl = customRefreshControl
+		if !refreshingNow {
+			refreshControl!.addTarget(self, action: #selector(onRefresh), for: .valueChanged)
+		}
 	}
 	
+	internal func removeRefreshControl(){
+		refreshControl?.endRefreshing()
+		refreshControl?.removeTarget(self, action: #selector(onRefresh), for: .valueChanged)
+		//refreshControl?.removeFromSuperview()
+		//refreshControl = nil
+	}
 	
+	// pull to refresh
 	@objc internal func onRefresh(){
+		refreshingNow = true
 		NetworkService.shared.downloadCompaniesFromServer(callback: {
 			DispatchQueue.main.async {
 				self.fetchRealmData()
+				self.refreshingNow = false
+				self.removeRefreshControl()
 				self.animateTableWithSections()
 			}
 		})
-		refreshControl?.endRefreshing()
 	}
 	
 	
@@ -72,7 +84,8 @@ class CompaniesController: UITableViewController {
 		try! realm.write {
 			let count = tableView.numberOfRows(inSection: 0)
 			let rows = (0..<count).map { IndexPath(row: $0, section: 0)}
-			companiesArr.realm?.deleteAll()
+//			companiesArr.realm?.deleteAll()
+			realm.deleteAll()
 			tableView.deleteRows(at: rows, with: .right)
 		}
 	}

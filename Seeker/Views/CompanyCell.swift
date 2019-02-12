@@ -76,13 +76,13 @@ class CompanyCell: UITableViewCell {
 				(img) in
 				guard let img = img else { return }
 				DispatchQueue.main.async {
-					self.setLoadedImage(img: img)
+					self.setLoadedImage(img: img, saveToRealm: true)
 				}
 			})
 		}
 	}
 	
-	private func setLoadedImage(img: UIImage){
+	private func setLoadedImage(img: UIImage, saveToRealm: Bool = false){
 		companyPhoto.image = img
 		companyPhoto.layer.cornerRadius = photoSize / 2
 		companyPhoto.layer.borderColor = Props.green1.cgColor
@@ -90,7 +90,8 @@ class CompanyCell: UITableViewCell {
 		companyPhoto.clipsToBounds = true
 		
 		//TODO: fix writing if company deleted before all images will download
-		guard let company = company else { return }
+		// The Realm is already in a write transaction' - если добавить картинку в компанию!!
+		guard let company = company, saveToRealm else { return }
 		
 		let realm = try! realmInstance()
 		try! realm.write {

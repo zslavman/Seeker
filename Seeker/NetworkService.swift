@@ -29,6 +29,7 @@ struct NetworkService {
 			do {
 				let someData = try JSONDecoder().decode([CompanyNet].self, from: data)
 				self.parseContext(someData: someData)
+				print("someData.count = \(someData.count)")
 				callback()
 			}
 			catch let err {
@@ -39,6 +40,7 @@ struct NetworkService {
 	
 	
 	private func parseContext(someData:[CompanyNet]){
+		var ralmObjects = [RealmCompany]()
 		let realm = try! realmInstance()
 		// save each company
 		someData.forEach({
@@ -62,10 +64,12 @@ struct NetworkService {
 
 				realmCompany.employees.append(newRealmEmpl)
 			})
-			try! realm.write {
-				realm.add(realmCompany)
-			}
+			ralmObjects.append(realmCompany)
 		})
+		try! realm.write {
+			print("ralmObjects.count = \(ralmObjects.count)")
+			realm.add(ralmObjects)
+		}
 	}
 	
 	

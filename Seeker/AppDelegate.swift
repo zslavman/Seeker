@@ -25,7 +25,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		application.statusBarStyle = .lightContent
 		
 		window?.rootViewController = UINavigationController(rootViewController: CompaniesController())
-		//window?.rootViewController = UINavigationController(rootViewController: CompaniesAutoUpdateController())
 		return true
 	}
 

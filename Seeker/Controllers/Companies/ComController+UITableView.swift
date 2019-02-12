@@ -43,8 +43,7 @@ extension CompaniesController {
 			return 150
 		}
 		navigationItem.leftBarButtonItem?.tintColor = .white
-		refreshControl?.removeTarget(self, action: #selector(onRefresh), for: .allEvents)
-		refreshControl = nil
+		removeRefreshControl()
 		return 0
 	}
 	
