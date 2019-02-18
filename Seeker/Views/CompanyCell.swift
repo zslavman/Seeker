@@ -82,26 +82,28 @@ class CompanyCell: UITableViewCell {
 		}
 	}
 	
-	private func setLoadedImage(img: UIImage, saveToRealm: Bool = false){
-		companyPhoto.image = img
-		companyPhoto.layer.cornerRadius = photoSize / 2
-		companyPhoto.layer.borderColor = Props.green1.cgColor
-		companyPhoto.layer.borderWidth = 1
-		companyPhoto.clipsToBounds = true
+	private func setLoadedImage(img: UIImage, saveToRealm: Bool = false) {
+		DispatchQueue.main.async {
+			self.companyPhoto.image = img
+			self.companyPhoto.layer.cornerRadius = self.photoSize / 2
+			self.companyPhoto.layer.borderColor = Props.green1.cgColor
+			self.companyPhoto.layer.borderWidth = 1
+			self.companyPhoto.clipsToBounds = true
 		
-		//TODO: fix writing if company deleted before all images will download
-		guard let company = company, saveToRealm else { return }
-		
-		let realm = try! realmInstance()
-		try! realm.write {
-			company.imageUrl = nil
-			company.imageData = UIImageJPEGRepresentation(img, 0.6)
+			guard let company = self.company, saveToRealm else { return }
+			guard !company.isInvalidated else { return } // fixing realm-failure on deleting before download complete
+			let realm = try! realmInstance()
+			try! realm.write {
+				company.imageUrl = nil
+				company.imageData = UIImageJPEGRepresentation(img, 0.6)
+			}
 		}
-		
 	}
 	
 	
 }
+
+
 
 
 

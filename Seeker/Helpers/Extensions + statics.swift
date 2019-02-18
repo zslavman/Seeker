@@ -125,7 +125,8 @@ class ImageLoader: UIImageView {
 		
 		let request = URLRequest(url: url, cachePolicy: URLRequest.CachePolicy.reloadIgnoringCacheData, timeoutInterval: 10)
 		URLSession.shared.dataTask(with: request) {
-			(data, response, error) in
+			[weak self] (data, response, error) in
+			guard let strongRef = self else { return }
 			
 			if let error = error {
 				print(error.localizedDescription)
@@ -134,7 +135,7 @@ class ImageLoader: UIImageView {
 			guard let data = data else { return }
 			if let downlodedImage = UIImage(data: data){
 				imagesCache[urlString] = downlodedImage
-				if urlString != self.urlString { // fix blinking & if self removed by ARC
+				if urlString != strongRef.urlString { // fix blinking & if self removed by ARC
 					return
 				}
 				callback(downlodedImage)

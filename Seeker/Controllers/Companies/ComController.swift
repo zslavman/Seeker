@@ -15,7 +15,11 @@ class CompaniesController: UITableViewController {
 	internal var companiesArr: Results<RealmCompany>!
 	internal var companyToUpdate: RealmCompany!// every time when you will edit company, you should save it here
 	private var refreshingNow: Bool = false
+	private var realm: Realm {
+		return try! realmInstance()
+	}
 
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		extendedLayoutIncludesOpaqueBars = true // fix refreshControl glich
@@ -34,12 +38,9 @@ class CompaniesController: UITableViewController {
 	
 	
 	private func fetchRealmData(){
-		let realm = try! realmInstance()
-		let tempArr = realm.objects(RealmCompany.self)
-		print("tempArr.count = \(tempArr.count)")
-		companiesArr = tempArr
+		companiesArr?.realm?.refresh() // fix empty database after get objects from NetworkService client
+		companiesArr = realm.objects(RealmCompany.self)
 	}
-	
 	
 	internal func addRefreshControl(){
 		if refreshControl == nil {
@@ -47,15 +48,19 @@ class CompaniesController: UITableViewController {
 			refreshControl!.tintColor = .white
 		}
 		if !refreshingNow {
-			refreshControl!.addTarget(self, action: #selector(onRefresh), for: .valueChanged)
+			refreshControl!.addTarget(self, action: #selector(onRefresh), for: UIControlEvents.valueChanged)
 		}
 	}
 	
 	internal func removeRefreshControl(){
-		refreshControl?.endRefreshing()
-		refreshControl?.removeTarget(self, action: #selector(onRefresh), for: .valueChanged)
-		//refreshControl?.removeFromSuperview()
-		//refreshControl = nil
+		if refreshControl == nil {
+			return
+		}
+		DispatchQueue.main.async {
+			self.refreshControl?.endRefreshing()
+			self.refreshControl?.removeTarget(self, action: #selector(self.onRefresh), for: .valueChanged)
+			self.refreshControl = nil // do it on main thread ONLY (else you will have big top space after "pull-to-refresh")
+		}
 	}
 	
 	// pull to refresh
@@ -67,10 +72,10 @@ class CompaniesController: UITableViewController {
 				self.refreshingNow = false
 				self.removeRefreshControl()
 				self.animateTableWithSections()
+				print(#function)
 			}
 		})
 	}
-	
 	
 	private func setupTableStyle(){
 		tableView.backgroundColor = Props.darkGreen
@@ -79,30 +84,22 @@ class CompaniesController: UITableViewController {
 		tableView.register(CompanyCell.self, forCellReuseIdentifier: cellID)
 	}
 	
-	
 	@objc private func onRemoveAll(){
-		let realm = try! realmInstance()
 		try! realm.write {
 			let count = tableView.numberOfRows(inSection: 0)
 			let rows = (0..<count).map { IndexPath(row: $0, section: 0)}
-//			companiesArr.realm?.deleteAll()
 			realm.deleteAll()
 			tableView.deleteRows(at: rows, with: .right)
 		}
 	}
 	
-	
 	@objc private func onPlusClick(){
-		onRefresh() // working fine allways!!! problem with refreshControl???
-		return
 		let addCompanyController = AddCompanyController()
 		let navController = UINavigationController(rootViewController: addCompanyController)
-		
 		addCompanyController.companiesControllerDelegate = self
 		present(navController, animated: true, completion: nil)
 	}
 
-	
 	internal func onEditAction(action: UITableViewRowAction, indexPath:IndexPath){
 		let editCompanyController = AddCompanyController()
 		editCompanyController.companiesControllerDelegate = self
@@ -122,12 +119,10 @@ class CompaniesController: UITableViewController {
 }
 
 
-
 extension CompaniesController: AddCompanyProtocol{
 	func addCompany(company: CompanyEntity) {
 		let realmCompanyObject = RealmCompany(entity: company)
 		let indexPath = IndexPath(row: companiesArr.count, section: 0)
-		let realm = try! realmInstance()
 		try! realm.write {
 			companiesArr.realm?.add(realmCompanyObject)
 			tableView.insertRows(at: [indexPath], with: .top)
