@@ -77,7 +77,7 @@ class AddEmployeeController: UIViewController {
 		sc.translatesAutoresizingMaskIntoConstraints = false
 		sc.tintColor = Props.green1
 		sc.selectedSegmentIndex = 0
-		sc.setTitleTextAttributes([NSAttributedStringKey.font: UIFont.systemFont(ofSize: 17)], for: .normal)
+		sc.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)], for: .normal)
 		sc.layer.cornerRadius = 8
 		sc.layer.borderColor = Props.green1.cgColor
 		sc.layer.borderWidth = 1

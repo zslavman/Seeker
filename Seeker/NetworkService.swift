@@ -16,7 +16,7 @@ struct NetworkService {
 	private let json = "https://drive.google.com/uc?export=download&id=1Rbk49RDjWffwbs-nMA9WaMjsaOAKWg_r"
 
 	
-	public func downloadCompaniesFromServer(callback: @escaping () -> ()){
+	public func downloadCompaniesFromServer(callback: (() -> Void)?){
 		guard let jsonURL = URL(string: json) else { return }
 		URLSession.shared.dataTask(with: jsonURL) {
 			(data, response, error) in
@@ -30,7 +30,7 @@ struct NetworkService {
 				let someData = try JSONDecoder().decode([CompanyNet].self, from: data)
 				self.parseContext(someData: someData)
 				print("someData.count = \(someData.count)")
-				callback()
+				callback?()
 			}
 			catch let err {
 				print("Failed to serealize JSON", err.localizedDescription)
@@ -46,7 +46,7 @@ struct NetworkService {
 		someData.forEach({
 			(com) in
 			let dateFormatter = DateFormatter()
-			dateFormatter.dateFormat = "MM/dd/yyyy"
+			dateFormatter.dateFormat = "dd/MM/yyyy"
 			let foundedDate = dateFormatter.date(from: com.founded!)
 		
 			let realmCompany = RealmCompany(founded: foundedDate, imageData: nil, imageUrl: com.photoUrl, name: com.name)

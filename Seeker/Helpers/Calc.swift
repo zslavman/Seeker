@@ -74,7 +74,7 @@ class Calc {
 			.foregroundColor: colors.0,
 		]))
 		atr.append(NSAttributedString(string: strings.1, attributes: [
-			.font: UIFont.boldSystemFont(ofSize: 16),
+			.font: UIFont.boldSystemFont(ofSize: 14),
 			.foregroundColor: colors.1,
 		]))
 		return atr

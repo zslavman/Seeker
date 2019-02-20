@@ -69,7 +69,7 @@ extension CompaniesController {
 			let realm = try! realmInstance()
 			try! realm.write {
 				self.companiesArr.realm?.delete(companyToDelete)
-				tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.left)
+				tableView.deleteRows(at: [indexPath], with: UITableView.RowAnimation.left)
 			}
 		}
 		let editAction = UITableViewRowAction(style: .normal, title: "Редакт", handler: onEditAction)

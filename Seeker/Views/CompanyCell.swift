@@ -33,7 +33,7 @@ class CompanyCell: UITableViewCell {
 	private let photoSize: CGFloat = 40
 	
 	
-	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 		backgroundColor = Props.green3
 		setupUI()
@@ -95,7 +95,7 @@ class CompanyCell: UITableViewCell {
 			let realm = try! realmInstance()
 			try! realm.write {
 				company.imageUrl = nil
-				company.imageData = UIImageJPEGRepresentation(img, 0.6)
+				company.imageData = img.jpegData(compressionQuality: 0.6)
 			}
 		}
 	}

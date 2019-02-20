@@ -129,7 +129,7 @@ class AddCompanyController: UIViewController {
 		var imgData: Data!
 		
 		if let image = photoPicker.image, isImageInstalled {
-			imgData = UIImageJPEGRepresentation(image, 0.6)
+			imgData = image.jpegData(compressionQuality: 0.6)
 		}
 		
 		let newCompany = CompanyEntity(founded: datePicker.date, imageData: imgData, imageUrl: nil, name: nameInputField.text!)
@@ -146,7 +146,7 @@ class AddCompanyController: UIViewController {
 		
 		var maybeData: Data?
 		if let image = self.photoPicker.image, self.isImageInstalled {
-			let imageData = UIImageJPEGRepresentation(image, 0.6)
+			let imageData = image.jpegData(compressionQuality: 0.6)
 			maybeData = imageData
 		}
 		if let company = company {
@@ -206,12 +206,15 @@ class AddCompanyController: UIViewController {
 
 extension AddCompanyController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 	
-	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+// Local variable inserted by Swift 4.2 migrator.
+let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
+
 		var selectedImage:UIImage?
-		if let editedImage = info[UIImagePickerControllerEditedImage] as? UIImage{
+		if let editedImage = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.editedImage)] as? UIImage{
 			selectedImage = editedImage
 		}
-		else if let originalImage = info[UIImagePickerControllerOriginalImage] as? UIImage{
+		else if let originalImage = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.originalImage)] as? UIImage{
 			selectedImage = originalImage
 		}
 		if selectedImage != nil {
@@ -261,3 +264,13 @@ extension AddCompanyController: UIImagePickerControllerDelegate, UINavigationCon
 
 
 
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
+	return input.rawValue
+}

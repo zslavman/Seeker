@@ -48,7 +48,7 @@ class CompaniesController: UITableViewController {
 			refreshControl!.tintColor = .white
 		}
 		if !refreshingNow {
-			refreshControl!.addTarget(self, action: #selector(onRefresh), for: UIControlEvents.valueChanged)
+			refreshControl!.addTarget(self, action: #selector(onRefresh), for: .valueChanged)
 		}
 	}
 	
@@ -65,6 +65,11 @@ class CompaniesController: UITableViewController {
 	
 	// pull to refresh
 	@objc internal func onRefresh(){
+//		DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: DispatchTime.now() + 2) {
+//			DispatchQueue.main.async {
+//				self.refreshControl?.endRefreshing()
+//			}
+//		}
 		refreshingNow = true
 		NetworkService.shared.downloadCompaniesFromServer(callback: {
 			DispatchQueue.main.async {
@@ -133,7 +138,7 @@ extension CompaniesController: AddCompanyProtocol{
 		if let index = companiesArr.index(of: companyToUpdate) {
 			let indexPath = IndexPath(row: index, section: 0)
 			DispatchQueue.main.async {
-				self.tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.fade)
+				self.tableView.reloadRows(at: [indexPath], with: UITableView.RowAnimation.fade)
 			}
 		}
 		
