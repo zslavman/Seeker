@@ -25,8 +25,8 @@ class Props {
 	public static var green4:UIColor = #colorLiteral(red: 0.5098039216, green: 0.631372549, blue: 0.662745098, alpha: 1)
 	
 	public static var darkGreen:UIColor = #colorLiteral(red: 0.04893633301, green: 0.1549213867, blue: 0.1845515141, alpha: 1)
-
-	
-	
-	
 }
+
+
+
+

@@ -65,7 +65,7 @@ extension CompaniesController {
 		let deleteAction = UITableViewRowAction(style: .destructive, title: "Удалить") {
 			(_, indexPath) in
 			let companyToDelete = self.companiesArr[indexPath.row]
-			//TODO: wrong indexPath on swipe-to-delete!!!
+			//TODO: wrong indexPath on swipe-to-delete on simulator only
 			let realm = try! realmInstance()
 			try! realm.write {
 				self.companiesArr.realm?.delete(companyToDelete)

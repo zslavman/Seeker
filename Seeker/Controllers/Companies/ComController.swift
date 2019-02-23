@@ -59,17 +59,20 @@ class CompaniesController: UITableViewController {
 		DispatchQueue.main.async {
 			self.refreshControl?.endRefreshing()
 			self.refreshControl?.removeTarget(self, action: #selector(self.onRefresh), for: .valueChanged)
+			// need kill because we won't add company on second pull-down swipe
 			self.refreshControl = nil // do it on main thread ONLY (else you will have big top space after "pull-to-refresh")
 		}
 	}
 	
 	// pull to refresh
 	@objc internal func onRefresh(){
-//		DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: DispatchTime.now() + 2) {
-//			DispatchQueue.main.async {
-//				self.refreshControl?.endRefreshing()
-//			}
-//		}
+		// if problems with network occurred
+		DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: DispatchTime.now() + 2) {
+			DispatchQueue.main.async {
+				self.refreshControl?.endRefreshing()
+				self.refreshingNow = false
+			}
+		}
 		refreshingNow = true
 		NetworkService.shared.downloadCompaniesFromServer(callback: {
 			DispatchQueue.main.async {
@@ -77,7 +80,6 @@ class CompaniesController: UITableViewController {
 				self.refreshingNow = false
 				self.removeRefreshControl()
 				self.animateTableWithSections()
-				print(#function)
 			}
 		})
 	}

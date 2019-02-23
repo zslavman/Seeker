@@ -27,7 +27,7 @@ extension UIColor {
 
 
 
-// кастомная лейба, в которой можно установить паддинги
+// custom label, witch have a paddings
 class UILabelWithEdges: UILabel {
 	
 	var textInsets = UIEdgeInsets.zero {
@@ -76,7 +76,6 @@ extension UIViewController {
 	
 	
 	@discardableResult internal func createBackground(height: CGFloat = 350) -> UIView{
-		
 		let backView = UIView()
 		backView.backgroundColor = Props.blue5
 		backView.translatesAutoresizingMaskIntoConstraints = false
@@ -113,14 +112,12 @@ class ImageLoader: UIImageView {
 	
 	/// download image from url
 	public func loadImage(urlString: String, callback: @escaping (UIImage?) -> Void) {
-		
 		if let imageFromCache = imagesCache[urlString] {
 			callback(imageFromCache)
 			return
 		}
 		self.urlString = urlString
 		//image = nil
-		
 		guard let url = URL(string: urlString) else { return }
 		
 		let request = URLRequest(url: url, cachePolicy: URLRequest.CachePolicy.reloadIgnoringCacheData, timeoutInterval: 10)
