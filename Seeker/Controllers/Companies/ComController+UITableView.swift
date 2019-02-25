@@ -57,24 +57,48 @@ extension CompaniesController {
 		let selectionColor = UIView()
 		selectionColor.backgroundColor = Props.blue4
 		cell.selectedBackgroundView = selectionColor
+		let longGesture = UILongPressGestureRecognizer(target: self, action: #selector(onLongPress(sender:)))
+		longGesture.minimumPressDuration = 0.7
+		cell.addGestureRecognizer(longGesture)
 		
 		return cell
 	}
 	
 	override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-		let deleteAction = UITableViewRowAction(style: .destructive, title: "Удалить") {
-			(_, indexPath) in
-			let companyToDelete = self.companiesArr[indexPath.row]
-			//TODO: wrong indexPath on swipe-to-delete on simulator only
-			let realm = try! realmInstance()
-			try! realm.write {
-				self.companiesArr.realm?.delete(companyToDelete)
-				tableView.deleteRows(at: [indexPath], with: UITableView.RowAnimation.left)
-			}
-		}
-		let editAction = UITableViewRowAction(style: .normal, title: "Редакт", handler: onEditAction)
+		let deleteAction = UITableViewRowAction(style: .destructive, title: "Удалить", handler: {
+			(_, indexPath2) in
+			self.delCompany(indexPath: indexPath)
+		})
+		let editAction = UITableViewRowAction(style: .normal, title: "Редакт", handler: {
+			(_, indexPath2) in
+			self.edit(indexPath: indexPath)
+		})
 		editAction.backgroundColor = #colorLiteral(red: 0.8925628481, green: 0.6441024697, blue: 0.1277349157, alpha: 1)
 		return [deleteAction, editAction]
+	}
+	
+	
+	@objc private func onLongPress(sender: UIGestureRecognizer){
+		let location = sender.location(in: self.tableView)
+		guard let indexPath = self.tableView.indexPathForRow(at: location) else { return }
+		guard sender.state == .began else { return }
+		
+		let actionSheetVC = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+		let editAction = UIAlertAction(title: "Редактировать", style: .default) {
+			_ in
+			self.edit(indexPath: indexPath)
+		}
+		editAction.actionImage = UIImage(named: "icon_edit")
+		actionSheetVC.addAction(editAction)
+		let delAction = UIAlertAction(title: "Удалить", style: .destructive) {
+			_ in
+			self.delCompany(indexPath: indexPath)
+		}
+		delAction.actionImage = UIImage(named: "icon_del")
+		actionSheetVC.addAction(delAction)
+		let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
+		actionSheetVC.addAction(cancelAction)
+		present(actionSheetVC, animated: true)
 	}
 	
 	

@@ -15,22 +15,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-		
 		configureAppearance()
 		
 		window = UIWindow()
 		window?.makeKeyAndVisible()
 		
-		// View controller-based status bar appearance = NO (plist)
-		application.statusBarStyle = .lightContent
-		
+		// View controller-based status bar appearance = NO (plist) if iOS < 9
+		//application.statusBarStyle = .lightContent
 		window?.rootViewController = UINavigationController(rootViewController: CompaniesController())
 		return true
 	}
 
 
 	private func configureAppearance(){
-		
 		UINavigationBar.appearance().tintColor = .white
 		UINavigationBar.appearance().prefersLargeTitles = true
 		UINavigationBar.appearance().barTintColor = Props.green1
@@ -46,6 +43,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 
+extension UINavigationController {
+	open override var preferredStatusBarStyle: UIStatusBarStyle {
+		//return topViewController?.preferredStatusBarStyle ?? .lightContent
+		return .lightContent
+	}
+}
 
 
 

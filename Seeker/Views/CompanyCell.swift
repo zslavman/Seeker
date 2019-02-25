@@ -100,7 +100,6 @@ class CompanyCell: UITableViewCell {
 		}
 	}
 	
-	
 }
 
 

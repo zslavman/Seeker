@@ -27,8 +27,19 @@ class EmployeesController: UITableViewController {
 		tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellID)
 		tableView.backgroundColor = Props.green1
 		setupButtonsInNavBar(selector: #selector(onPlusClick))
+		//setupToolbar()
 	}
 
+	private func setupToolbar() {
+		let statusBarHeight = UIApplication.shared.statusBarFrame.height
+		let wid = UIScreen.main.bounds.width
+		let frame = CGRect(x: 0, y: 0, width: wid, height: 248)
+		let uperContent = UIEdgeInsets(top: statusBarHeight, left: 0, bottom: 0, right: wid)
+		tableView.contentInset = uperContent
+		let toolbar = UIView(frame: frame)
+		toolbar.backgroundColor = .green
+		view.addSubview(toolbar)
+	}
 	
 	@objc private func onPlusClick(){
 		let addEmployeeController = AddEmployeeController()
@@ -37,8 +48,6 @@ class EmployeesController: UITableViewController {
 		let navcontroller = UINavigationController(rootViewController: addEmployeeController)
 		present(navcontroller, animated: true, completion: nil)
 	}
-	
-	
 	
 	private func fetchEmployees(){
 		guard let employeesForCurrentCompany = company?.employees else { return }
@@ -82,6 +91,10 @@ class EmployeesController: UITableViewController {
 			cell.textLabel?.attributedText = Calc.twoColorString(strings: (employee.name!, str2), colors: (UIColor.white, Props.green4))
 		}
 		return cell
+	}
+	
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		tableView.deselectRow(at: indexPath, animated: true)
 	}
 	
 }

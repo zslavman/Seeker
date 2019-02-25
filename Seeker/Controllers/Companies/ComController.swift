@@ -107,13 +107,32 @@ class CompaniesController: UITableViewController {
 		present(navController, animated: true, completion: nil)
 	}
 
-	internal func onEditAction(action: UITableViewRowAction, indexPath:IndexPath){
+	internal func onEditAction(action: UITableViewRowAction, indexPath: IndexPath){
+		edit(indexPath: indexPath)
+	}
+	
+	internal func edit(indexPath: IndexPath){
 		let editCompanyController = AddCompanyController()
 		editCompanyController.companiesControllerDelegate = self
 		editCompanyController.company = companiesArr[indexPath.row]
 		companyToUpdate = companiesArr[indexPath.row]
 		let navController = UINavigationController(rootViewController: editCompanyController)
 		present(navController, animated: true, completion: nil)
+	}
+	
+	
+	internal func delCompany(indexPath: IndexPath){
+		//
+		//TODO: companiesArr stay mixed ordering after delete item!!!
+		//
+		let companyToDelete = self.companiesArr[indexPath.row]
+		let realm = try! realmInstance()
+		try! realm.write {
+			companiesArr.realm?.delete(companyToDelete)
+			companiesArr.realm?.refresh()
+			tableView.deleteRows(at: [indexPath], with: UITableView.RowAnimation.left)
+			//tableView.reloadData() // fix problem with mixing, but has no animation
+		}
 	}
 	
 	private func animateTableWithSections(){
@@ -143,23 +162,7 @@ extension CompaniesController: AddCompanyProtocol{
 				self.tableView.reloadRows(at: [indexPath], with: UITableView.RowAnimation.fade)
 			}
 		}
-		
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

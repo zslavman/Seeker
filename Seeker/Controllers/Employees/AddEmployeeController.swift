@@ -9,7 +9,7 @@
 import UIKit
 import RealmSwift
 
-protocol AddEmployeeDelegate:class {
+protocol AddEmployeeDelegate: class {
 	func updateEmployes(employee: RealmEmployee)
 }
 

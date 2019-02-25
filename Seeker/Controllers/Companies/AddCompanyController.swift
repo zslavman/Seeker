@@ -93,10 +93,8 @@ class AddCompanyController: UIViewController {
 
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		
 		navigationItem.title = company == nil ? "Добавить компанию" : "Редакт. компанию"
 	}
-	
 	
 	@objc private func onSaveClick(){
 		if company == nil {
