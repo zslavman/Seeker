@@ -14,7 +14,7 @@ class RealmCompany: Object {
 	@objc dynamic var imageData: Data?
 	@objc dynamic var imageUrl: String?
 	@objc dynamic var membership: String = String()
-	@objc dynamic var name: String?
+	@objc dynamic var name: String = String()
 	@objc dynamic var id = UUID().uuidString
 	let employees = List<RealmEmployee>()
 	
@@ -31,7 +31,7 @@ class RealmCompany: Object {
 		self.name = entity.name
 	}
 	
-	convenience init(founded: Date?, imageData: Data?, imageUrl: String?, name: String?, membership: String = "Brotherhood of Steel") {
+	convenience init(founded: Date?, imageData: Data?, imageUrl: String?, name: String, membership: String = "Brotherhood of Steel") {
 		self.init()
 		self.founded = founded
 		self.imageData = imageData
@@ -39,6 +39,11 @@ class RealmCompany: Object {
 		self.name = name
 		self.membership = membership
 	}
+	
+	var entity: CompanyEntity {
+		return CompanyEntity(founded: founded, imageData: imageData, imageUrl: imageUrl, name: name)
+	}
+	
 }
 
 

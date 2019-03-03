@@ -14,7 +14,6 @@ class Calc {
 	
 	/// check UITextField/UITextView on empty or just only spaces
 	public static func checkBeforeUse<T>(field: T) -> String? {
-		
 		if let str = (field as! UITextField).text, !str.isEmpty {
 			let n = str.filter{!" ".contains($0)}
 			if n.count > 0 {
@@ -44,12 +43,10 @@ class Calc {
 	/// - Parameters:
 	///   - textfields: array of textfields
 	///   - alertStrings: array of alert messages
-	public static func isFormValid<T>(textfields:[T], alertStrings:[String?]) -> UIAlertController?{
-		
+	public static func isFormValid<T>(textfields:[T], alertStrings:[String?]) -> UIAlertController? {
 		for (index, _) in textfields.enumerated(){
-			
 			if Calc.checkBeforeUse(field: textfields[index]) == nil { 	// if field is empty
-				let message = alertStrings[index] ?? "Неправильное поданы агрументы alertStrings"
+				let message = alertStrings[index] ?? "Неправильно поданы агрументы alertStrings"
 				return Calc.createAlert(message: message)
 			}
 		}
@@ -57,11 +54,19 @@ class Calc {
 	}
 	
 	
-	public static func convertDate(founded: Date) -> String{
+	public static func convertDate(founded: Date) -> String {
 		let dateFormater = DateFormatter()
 		dateFormater.locale = Locale(identifier: "RU")
 		dateFormater.dateFormat = "dd MMM yyyy"
 		let dateString = dateFormater.string(from: founded)
+		return dateString
+	}
+	
+	public static func convertDate(date: Date) -> String {
+		let dateFormater = DateFormatter()
+		dateFormater.locale = Locale(identifier: "RU")
+		dateFormater.dateFormat = "dd.MM.yyyy"
+		let dateString = dateFormater.string(from: date)
 		return dateString
 	}
 	
@@ -91,8 +96,31 @@ class Calc {
 		print ("Время выполнения \(title) = \(roundedTime) секунд")
 	}
 	
+	/// generate random number in range
+	public static func random(_ min: Int, _ max: Int) -> Int {
+		guard min < max else { return min }
+		return Int(arc4random_uniform(UInt32(1 + max - min))) + min
+	}
+	
+	/// generate random date in range
+	public static func randomWithinDaysBeforeToday(_ yearsAgoMin: Int, _ yearsAgoMax: Int) -> Date {
+		let today = Date()
+		let yearsAgo = random(yearsAgoMin, yearsAgoMax)
+		let earliest = today.addingTimeInterval(TimeInterval(-yearsAgo*365*24*60*60))
+		
+		let interval = today.timeIntervalSince(earliest)
+		let randomInterval = TimeInterval(arc4random_uniform(UInt32(interval)))
+		return earliest.addingTimeInterval(randomInterval)
+	}
+		
+	
+	
 }
 
+
+
+
+// outside class
 
 func realmInstance() throws -> Realm {
 	let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)

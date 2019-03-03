@@ -29,7 +29,6 @@ struct NetworkService {
 			do {
 				let someData = try JSONDecoder().decode([CompanyNet].self, from: data)
 				self.parseContext(someData: someData)
-				print("someData.count = \(someData.count)")
 				callback?()
 			}
 			catch let err {
@@ -66,10 +65,12 @@ struct NetworkService {
 			})
 			ralmObjects.append(realmCompany)
 		})
-		try! realm.write {
+//		DispatchQueue.main.async {
 			print("ralmObjects.count = \(ralmObjects.count)")
-			realm.add(ralmObjects)
-		}
+			try! realm.write {
+				realm.add(ralmObjects)
+			}
+//		}
 	}
 	
 	
@@ -77,7 +78,7 @@ struct NetworkService {
 
 
 struct CompanyNet: Decodable {
-	let name		:String?
+	let name		:String
 	let photoUrl	:String?
 	let founded		:String?
 	let employees	:[EmployeeNet]?

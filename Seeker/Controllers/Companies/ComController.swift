@@ -12,12 +12,13 @@ import RealmSwift
 class CompaniesController: UITableViewController {
 
 	internal let cellID = "cellID"
-	internal var companiesArr: Results<RealmCompany>!
+	internal var companiesArr = [RealmCompany]()
 	internal var companyToUpdate: RealmCompany!// every time when you will edit company, you should save it here
 	private var refreshingNow: Bool = false
 	private var realm: Realm {
 		return try! realmInstance()
 	}
+	private var subscription: NotificationToken?
 
 	
 	override func viewDidLoad() {
@@ -38,8 +39,13 @@ class CompaniesController: UITableViewController {
 	
 	
 	private func fetchRealmData(){
-		companiesArr?.realm?.refresh() // fix empty database after get objects from NetworkService client
-		companiesArr = realm.objects(RealmCompany.self)
+		companiesArr = fetchCompanies()
+		//subscribe(to: "Intel", callback: nil)
+	}
+	
+	private func fetchCompanies() -> [RealmCompany] {
+		realm.refresh()
+		return realm.objects(RealmCompany.self).sorted { $0.name.lowercased() < $1.name.lowercased() }
 	}
 	
 	internal func addRefreshControl(){
@@ -96,6 +102,7 @@ class CompaniesController: UITableViewController {
 			let count = tableView.numberOfRows(inSection: 0)
 			let rows = (0..<count).map { IndexPath(row: $0, section: 0)}
 			realm.deleteAll()
+			companiesArr.removeAll()
 			tableView.deleteRows(at: rows, with: .right)
 		}
 	}
@@ -122,16 +129,13 @@ class CompaniesController: UITableViewController {
 	
 	
 	internal func delCompany(indexPath: IndexPath){
-		//
-		//TODO: companiesArr stay mixed ordering after delete item!!!
-		//
-		let companyToDelete = self.companiesArr[indexPath.row]
-		let realm = try! realmInstance()
+		let willRemoved = companiesArr[indexPath.row]
 		try! realm.write {
-			companiesArr.realm?.delete(companyToDelete)
-			companiesArr.realm?.refresh()
+			if let object = realm.objects(RealmCompany.self).filter("id == %@", willRemoved.id).first {
+				realm.delete(object)
+			}
+			companiesArr.remove(at: indexPath.row)
 			tableView.deleteRows(at: [indexPath], with: UITableView.RowAnimation.left)
-			//tableView.reloadData() // fix problem with mixing, but has no animation
 		}
 	}
 	
@@ -142,16 +146,59 @@ class CompaniesController: UITableViewController {
 		tableView.reloadSections(sections as IndexSet, with: .bottom)
 	}
 	
+	
+	//------------------------------------------------------
+	// test realm opportunities
+	
+	// subscribe on changes in any realm item of all items
+	private func subscribe(callback: @escaping ([RealmCompany]) -> Void) {
+		let results = realm.objects(RealmCompany.self)
+		subscription = results.observe {
+			changes in
+			let resultsArray = Array(results)
+			print("Changes = \(changes)")
+			callback(resultsArray)
+		}
+	}
+	
+	private func subscribe(to itemName: String, callback: ((RealmCompany) -> ())?) {
+		let item = realm.objects(RealmCompany.self).filter("name == %@", itemName)
+		subscription = item.observe {
+			changes in
+			print("Changes = \(changes)")
+			callback?(item.first!)
+		}
+	}
+	
+	private func unsubscribe() {
+		subscription?.invalidate()
+		subscription = nil
+	}
+	
+	deinit {
+		unsubscribe()
+	}
+	
 }
+
 
 
 extension CompaniesController: AddCompanyProtocol{
 	func addCompany(company: CompanyEntity) {
 		let realmCompanyObject = RealmCompany(entity: company)
-		let indexPath = IndexPath(row: companiesArr.count, section: 0)
+		// define place for a company
+		var testArr = companiesArr.map{$0.name}
+		testArr.append(realmCompanyObject.name)
+		testArr.sort{$0.localizedCaseInsensitiveCompare($1) == .orderedAscending}
+		guard let index = testArr.firstIndex(of: realmCompanyObject.name) else { return }
+		
+		let indexPath = IndexPath(row: index, section: 0)
 		try! realm.write {
-			companiesArr.realm?.add(realmCompanyObject)
-			tableView.insertRows(at: [indexPath], with: .top)
+			companiesArr.insert(realmCompanyObject, at: index)
+			realm.add(realmCompanyObject)
+			DispatchQueue.main.async {
+				self.tableView.insertRows(at: [indexPath], with: .top)
+			}
 		}
 	}
 	
@@ -162,6 +209,10 @@ extension CompaniesController: AddCompanyProtocol{
 				self.tableView.reloadRows(at: [indexPath], with: UITableView.RowAnimation.fade)
 			}
 		}
+	}
+	
+	func returnAllCompanies() -> [RealmCompany] {
+		return companiesArr
 	}
 }
 

@@ -11,6 +11,7 @@ import UIKit
 protocol AddCompanyProtocol:class {
 	func addCompany(company: CompanyEntity)
 	func didEditCompany()
+	func returnAllCompanies() -> [RealmCompany]
 }
 	
 
@@ -70,7 +71,6 @@ class AddCompanyController: UIViewController {
 	internal lazy var isImageInstalled = false // don't want to save default picture in storage
 	
 	
-	
     override func viewDidLoad() {
         super.viewDidLoad()
 		setupUI()
@@ -84,13 +84,11 @@ class AddCompanyController: UIViewController {
 		)
     }
 
-	
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		nameInputField.becomeFirstResponder()
 	}
 	
-
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		navigationItem.title = company == nil ? "Добавить компанию" : "Редакт. компанию"
@@ -105,7 +103,6 @@ class AddCompanyController: UIViewController {
 		}
 	}
 	
-	
 	@objc private func onPhotoClick(){
 		DispatchQueue.main.async { // ?? doesn't work
 			self.view.endEditing(true)
@@ -116,7 +113,6 @@ class AddCompanyController: UIViewController {
 		present(imagePickerController, animated: true, completion: nil)
 	}
 	
-	
 	/// create new company
 	private func createCompany(){
 		if let alertController = Calc.isFormValid(textfields: [nameInputField], alertStrings: ["Введите имя компании!"]){
@@ -124,19 +120,29 @@ class AddCompanyController: UIViewController {
 			nameInputField.text = ""
 			return
 		}
+		let str = nameInputField.text!
+		if isCompanyAlreadyExist(givenName: str){
+			let alertController = Calc.createAlert(message: "Компания '\(str)' уже существует!")
+			present(alertController, animated: true)
+			return
+		}
 		var imgData: Data!
-		
 		if let image = photoPicker.image, isImageInstalled {
 			imgData = image.jpegData(compressionQuality: 0.6)
 		}
-		
-		let newCompany = CompanyEntity(founded: datePicker.date, imageData: imgData, imageUrl: nil, name: nameInputField.text!)
+		let newCompany = CompanyEntity(founded: datePicker.date, imageData: imgData, imageUrl: nil, name: str)
 		
 		dismiss(animated: true, completion: {
 			self.companiesControllerDelegate?.addCompany(company: newCompany)
 		})
 	}
-
+	
+	/// check if you already have a company with same name
+	private func isCompanyAlreadyExist(givenName: String) -> Bool {
+		var compArr = companiesControllerDelegate!.returnAllCompanies()
+		compArr = compArr.filter{$0.name == givenName}
+		return compArr.count > 0
+	}
 	
 	/// edit company
 	private func editAndSaveCompanyChanges(){
@@ -160,7 +166,6 @@ class AddCompanyController: UIViewController {
 		})
 	}
 
-	
 	private func setupUI(){
 		let backView = createBackground()
 		view.addSubview(nameLabel)
@@ -191,7 +196,6 @@ class AddCompanyController: UIViewController {
 		])
 	}
 	
-	
 	internal func roundPhoto() {
 		photoPicker.layer.cornerRadius = imageSize / 2
 		photoPicker.clipsToBounds = true
@@ -205,9 +209,9 @@ class AddCompanyController: UIViewController {
 extension AddCompanyController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 	
 	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-// Local variable inserted by Swift 4.2 migrator.
-let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
-
+		// Local variable inserted by Swift 4.2 migrator.
+		let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
+		
 		var selectedImage:UIImage?
 		if let editedImage = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.editedImage)] as? UIImage{
 			selectedImage = editedImage
@@ -220,7 +224,6 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 			roundPhoto()
 			isImageInstalled = true
 		}
-		
 		dismiss(animated: true, completion: nil)
 	}
 	

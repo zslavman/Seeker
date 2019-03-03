@@ -13,7 +13,7 @@ struct CompanyEntity {
 	let imageData: Data?
 	let imageUrl: String?
 	let membership = "Brotherhood of Steel"
-	let name: String?
+	let name: String
 }
 
 struct EmployeeEntity {

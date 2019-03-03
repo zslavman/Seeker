@@ -100,6 +100,7 @@ class AddEmployeeController: UIViewController {
 			action: #selector(onSaveClick)
 		)
 		setupUI()
+		birthdayInput.text = generateRandDate()
 	}
 	
 
@@ -137,6 +138,13 @@ class AddEmployeeController: UIViewController {
 			typeSegmentedControl.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -15),
 			typeSegmentedControl.heightAnchor.constraint(equalToConstant: 40),
 		])
+	}
+	
+	
+	private func generateRandDate() -> String {
+		let newDate = Calc.randomWithinDaysBeforeToday(20, 50)
+		let strDate = Calc.convertDate(date: newDate)
+		return strDate
 	}
 	
 	
