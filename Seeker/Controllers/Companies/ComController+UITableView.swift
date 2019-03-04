@@ -98,6 +98,15 @@ extension CompaniesController {
 		actionSheetVC.addAction(delAction)
 		let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
 		actionSheetVC.addAction(cancelAction)
+		
+		// for iPad only
+		if (UIDevice.current.userInterfaceIdiom == .pad){
+			if let popoverController = actionSheetVC.popoverPresentationController {
+				popoverController.sourceView = self.view
+				popoverController.sourceRect = CGRect(x: location.x, y: location.y, width: 0, height: 0)
+				//popoverController.permittedArrowDirections = [] // remove menu arrow
+			}
+		}
 		present(actionSheetVC, animated: true)
 	}
 	
