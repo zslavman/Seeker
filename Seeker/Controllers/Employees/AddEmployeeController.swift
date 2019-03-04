@@ -13,7 +13,6 @@ protocol AddEmployeeDelegate: class {
 	func updateEmployes(employee: RealmEmployee)
 }
 
-
 class AddEmployeeController: UIViewController {
 
 	public weak var delegate: AddEmployeeDelegate?

@@ -127,7 +127,6 @@ class CompaniesController: UITableViewController {
 		present(navController, animated: true, completion: nil)
 	}
 	
-	
 	internal func delCompany(indexPath: IndexPath){
 		let willRemoved = companiesArr[indexPath.row]
 		try! realm.write {
