@@ -103,14 +103,16 @@ class Calc {
 	}
 	
 	/// generate random date in range
-	public static func randomWithinDaysBeforeToday(_ yearsAgoMin: Int, _ yearsAgoMax: Int) -> Date {
+	public static func randomWithinYearsBeforeToday(_ yearsAgoMin: Int, _ yearsAgoMax: Int) -> Date {
 		let today = Date()
 		let yearsAgo = random(yearsAgoMin, yearsAgoMax)
-		let earliest = today.addingTimeInterval(TimeInterval(-yearsAgo*365*24*60*60))
+		let randomDayOfYear = random(1, 365)
+		guard let fromDate = Calendar.current.date(byAdding: Calendar.Component.year, value: -yearsAgo, to: today) else { return today}
+		guard let toDate = Calendar.current.date(byAdding: Calendar.Component.year, value: -yearsAgoMin, to: today) else { return today}
 		
-		let interval = today.timeIntervalSince(earliest)
-		let randomInterval = TimeInterval(arc4random_uniform(UInt32(interval)))
-		return earliest.addingTimeInterval(randomInterval)
+		let interval = fromDate.timeIntervalSince(toDate)
+		let randomIntervalInRange = random(Int(interval), Int(fromDate.timeIntervalSinceNow as TimeInterval))
+		return fromDate.addingTimeInterval(TimeInterval(randomIntervalInRange + randomDayOfYear * 86400))
 	}
 		
 	

@@ -142,7 +142,7 @@ class AddEmployeeController: UIViewController {
 	
 	
 	private func generateRandDate() -> String {
-		let newDate = Calc.randomWithinDaysBeforeToday(20, 50)
+		let newDate = Calc.randomWithinYearsBeforeToday(20, 40)
 		let strDate = Calc.convertDate(date: newDate)
 		return strDate
 	}
