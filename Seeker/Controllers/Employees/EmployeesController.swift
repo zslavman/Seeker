@@ -8,26 +8,62 @@
 
 import UIKit
 
-class EmployeesController: UITableViewController {
-	
+class EmployeesController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 	
 	public var company: RealmCompany?
 	private var employeesArr = [[RealmEmployee]]()
 	private let cellID = "cellID"
-	
+	public lazy var tableView: UITableView = {
+		let table = UITableView()
+		table.translatesAutoresizingMaskIntoConstraints = false
+		table.register(UITableViewCell.self, forCellReuseIdentifier: "cellID")
+		table.backgroundColor = Props.green1
+		table.delegate = self
+		table.dataSource = self
+		table.backgroundColor = Props.darkGreen
+		table.separatorColor = .white
+		table.tableFooterView = UIView()
+		return table
+	}()
+	let picture: UIImageView = {
+		let pic = UIImageView()
+		pic.translatesAutoresizingMaskIntoConstraints = false
+		pic.contentMode = .scaleAspectFit
+		pic.backgroundColor = .white
+		return pic
+	}()
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		navigationItem.title = company?.name
+		if let imgData = company?.imageData {
+			picture.image = UIImage(data: imgData)
+		}
 	}
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		view.backgroundColor = Props.darkGreen
+		insertTable()
 		fetchEmployees()
-		tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellID)
-		tableView.backgroundColor = Props.green1
 		setupButtonsInNavBar(selector: #selector(onPlusClick))
 		//setupToolbar()
+	}
+	
+	private func insertTable(){
+		view.addSubview(tableView)
+		view.addSubview(picture)
+		NSLayoutConstraint.activate([
+			picture.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+			picture.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+			picture.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+			picture.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.33),
+			
+			tableView.topAnchor.constraint(equalTo: picture.bottomAnchor, constant: 0),
+			tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+			tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+			tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+		])
 	}
 
 	private func setupToolbar() {
@@ -56,17 +92,18 @@ class EmployeesController: UITableViewController {
 		for (index, _) in AddEmployeeController.segmentVars.enumerated() {
 			employeesArr.append(employeesForCurrentCompany.filter{$0.type == AddEmployeeController.segmentVars[index]})
 		}
+		tableView.reloadData()
 	}
 	
-	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return employeesArr[section].count
 	}
 	
-	override func numberOfSections(in tableView: UITableView) -> Int {
+	func numberOfSections(in tableView: UITableView) -> Int {
 		return employeesArr.count
 	}
 	
-	override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+	func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 		let label = UILabelWithEdges()
 		label.textInsets.left = 15
 		label.text = AddEmployeeController.tabNames[section]
@@ -76,11 +113,11 @@ class EmployeesController: UITableViewController {
 		return label
 	}
 	
-	override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+	func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
 		return 50
 	}
 	
-	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath)
 		let employee = employeesArr[indexPath.section][indexPath.row]
 		cell.textLabel?.text = employee.name
@@ -93,7 +130,7 @@ class EmployeesController: UITableViewController {
 		return cell
 	}
 	
-	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		tableView.deselectRow(at: indexPath, animated: true)
 	}
 	
