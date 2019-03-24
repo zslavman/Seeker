@@ -40,7 +40,7 @@ class CompaniesController: UITableViewController {
 	
 	private func fetchRealmData(){
 		companiesArr = fetchCompanies()
-		//subscribe(to: "Intel", callback: nil)
+//		subscribe(to: "Intel", callback: nil)
 	}
 	
 	private func fetchCompanies() -> [RealmCompany] {

@@ -7,10 +7,17 @@
 //
 
 import UIKit
+import RealmSwift
 
-class EmployeesController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class EmployeesController: UIViewController {
 	
-	public var company: RealmCompany?
+	public var company: RealmCompany? {
+		didSet {
+			if company!.imageData == nil {
+				subscribe(to: company!) { self.didSubscribedCompanyChange() }
+			}
+		}
+	}
 	private var employeesArr = [[RealmEmployee]]()
 	private let cellID = "cellID"
 	public lazy var tableView: UITableView = {
@@ -33,6 +40,14 @@ class EmployeesController: UIViewController, UITableViewDelegate, UITableViewDat
 		return pic
 	}()
 	
+	private var realm: Realm {
+		return try! realmInstance()
+	}
+	private var subscription: NotificationToken?
+	
+	
+	
+	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		navigationItem.title = company?.name
@@ -47,35 +62,50 @@ class EmployeesController: UIViewController, UITableViewDelegate, UITableViewDat
 		insertTable()
 		fetchEmployees()
 		setupButtonsInNavBar(selector: #selector(onPlusClick))
-		//setupToolbar()
+	}
+	
+	override func viewWillDisappear(_ animated: Bool) {
+		unsubscribe()
 	}
 	
 	private func insertTable(){
 		view.addSubview(tableView)
-		view.addSubview(picture)
+		tableView.tableHeaderView = picture
+
 		NSLayoutConstraint.activate([
-			picture.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-			picture.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-			picture.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-			picture.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.33),
-			
-			tableView.topAnchor.constraint(equalTo: picture.bottomAnchor, constant: 0),
+			tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
 			tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
 			tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
 			tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+			
+			picture.centerXAnchor.constraint(equalTo: picture.superview!.centerXAnchor),
+			picture.leadingAnchor.constraint(equalTo: picture.superview!.leadingAnchor),
+			picture.trailingAnchor.constraint(equalTo: picture.superview!.trailingAnchor),
+//			picture.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.33),
+			picture.heightAnchor.constraint(equalToConstant: 150),
 		])
 	}
 
-	private func setupToolbar() {
-		let statusBarHeight = UIApplication.shared.statusBarFrame.height
-		let wid = UIScreen.main.bounds.width
-		let frame = CGRect(x: 0, y: 0, width: wid, height: 248)
-		let uperContent = UIEdgeInsets(top: statusBarHeight, left: 0, bottom: 0, right: wid)
-		tableView.contentInset = uperContent
-		let toolbar = UIView(frame: frame)
-		toolbar.backgroundColor = .green
-		view.addSubview(toolbar)
+	
+	// fix strange glich with tableHeaderView
+	override func viewDidLayoutSubviews() {
+		super.viewDidLayoutSubviews()
+		
+		// Dynamic sizing for the header view
+		guard let headerView = tableView.tableHeaderView else { return }
+		
+		let height = headerView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+		var headerFrame = headerView.frame
+		
+		// If we don't have this check, viewDidLayoutSubviews()
+		// will get repeatedly, causing the app to hang
+		if height != headerFrame.size.height {
+			headerFrame.size.height = height
+			headerView.frame = headerFrame
+			tableView.tableHeaderView = headerView
+		}
 	}
+	
 	
 	@objc private func onPlusClick(){
 		let addEmployeeController = AddEmployeeController()
@@ -85,6 +115,7 @@ class EmployeesController: UIViewController, UITableViewDelegate, UITableViewDat
 		present(navcontroller, animated: true, completion: nil)
 	}
 	
+	
 	private func fetchEmployees(){
 		guard let employeesForCurrentCompany = company?.employees else { return }
 		employeesArr.removeAll()
@@ -92,8 +123,38 @@ class EmployeesController: UIViewController, UITableViewDelegate, UITableViewDat
 		for (index, _) in AddEmployeeController.segmentVars.enumerated() {
 			employeesArr.append(employeesForCurrentCompany.filter{$0.type == AddEmployeeController.segmentVars[index]})
 		}
-		tableView.reloadData()
 	}
+	
+
+	// if company picture still blank
+	private func subscribe(to company: RealmCompany, callback: (() -> Void)? = nil) {
+		guard subscription == nil else { return }
+		subscription = company.observe {
+			changes in
+			print("Changes with RealmObject has occurred")
+			callback?()
+		}
+	}
+	private func unsubscribe() {
+		subscription?.invalidate()
+		subscription = nil
+	}
+
+	
+	// when picture downloading has finished
+	private func didSubscribedCompanyChange(){
+		// renew logo
+		if let imgData = company?.imageData {
+			picture.image = UIImage(data: imgData)
+		}
+	}
+	
+}
+
+
+
+
+extension EmployeesController: UITableViewDelegate, UITableViewDataSource {
 	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return employeesArr[section].count
