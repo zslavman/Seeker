@@ -84,18 +84,34 @@ extension CompaniesController {
 		guard sender.state == .began else { return }
 		
 		let actionSheetVC = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+		
+		let appAction = UIAlertAction(title: "Открыть ChatApp", style: .default) {
+			_ in
+			self.runUrlSheme(shemeName: "chatapp://")
+		}
+		actionSheetVC.addAction(appAction)
+		//*****
+		let mailAction = UIAlertAction(title: "Открыть Emails", style: .default) {
+			_ in
+			self.runUrlSheme(shemeName: "message://")
+		}
+		mailAction.actionImage = UIImage(named: "mail")
+		actionSheetVC.addAction(mailAction)
+		//*****
 		let editAction = UIAlertAction(title: "Редактировать", style: .default) {
 			_ in
 			self.edit(indexPath: indexPath)
 		}
 		editAction.actionImage = UIImage(named: "icon_edit")
 		actionSheetVC.addAction(editAction)
+		//*****
 		let delAction = UIAlertAction(title: "Удалить", style: .destructive) {
 			_ in
 			self.delCompany(indexPath: indexPath)
 		}
 		delAction.actionImage = UIImage(named: "icon_del")
 		actionSheetVC.addAction(delAction)
+		//*****
 		let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
 		actionSheetVC.addAction(cancelAction)
 		
@@ -108,6 +124,24 @@ extension CompaniesController {
 			}
 		}
 		present(actionSheetVC, animated: true)
+	}
+	
+	
+	/*
+	*  URL-sheme implementation.
+	*  Don't forget add into info.plist an array LSApplicationQueriesSchemes with elements (appNames:String)
+	*  "chatapp://" - custom, "message://" - native mail client
+	*/
+	private func runUrlSheme(shemeName: String) {
+		// let messageForSecondApp = "This is Sparta!"
+		// let appUrl = URL(string: "chatapp://secretPage?message=\(messageForSecondApp)")!
+		guard let appURL = URL(string: shemeName) else {
+			print("URL-sheme invalid!")
+			return
+		}
+		if UIApplication.shared.canOpenURL(appURL) {
+			UIApplication.shared.open(appURL, options: [:], completionHandler: nil)
+		}
 	}
 	
 	

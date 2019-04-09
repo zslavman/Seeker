@@ -51,7 +51,7 @@ class UILabelWithEdges: UILabel {
 extension UIViewController {
 	
 	internal func setupButtonsInNavBar(selector: Selector){
-		navigationItem.rightBarButtonItem = UIBarButtonItem(
+		navigationItem.rightBarButtonItem = UIBarButtonItem (
 			image: #imageLiteral(resourceName: "plus_bttn"),
 			style: .plain,
 			target: self,
@@ -61,7 +61,7 @@ extension UIViewController {
 	
 	
 	internal func setupCancelButton(){
-		navigationItem.leftBarButtonItem = UIBarButtonItem(
+		navigationItem.leftBarButtonItem = UIBarButtonItem (
 			title: "Отмена",
 			style: .plain,
 			target: self,
