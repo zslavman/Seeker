@@ -115,14 +115,14 @@ class AddCompanyController: UIViewController {
 	
 	/// create new company
 	private func createCompany(){
-		if let alertController = Calc.isFormValid(textfields: [nameInputField], alertStrings: ["Введите имя компании!"]){
+		if let alertController = SUtils.isFormValid(textfields: [nameInputField], alertStrings: ["Введите имя компании!"]){
 			present(alertController, animated: true)
 			nameInputField.text = ""
 			return
 		}
 		let str = nameInputField.text!
 		if isCompanyAlreadyExist(givenName: str){
-			let alertController = Calc.createAlert(message: "Компания '\(str)' уже существует!")
+			let alertController = SUtils.createAlert(message: "Компания '\(str)' уже существует!")
 			present(alertController, animated: true)
 			return
 		}
@@ -146,7 +146,7 @@ class AddCompanyController: UIViewController {
 	
 	/// edit company
 	private func editAndSaveCompanyChanges(){
-		guard let name = Calc.checkBeforeUse(field: nameInputField) else { return }
+		guard let name = SUtils.checkBeforeUse(field: nameInputField) else { return }
 		
 		var maybeData: Data?
 		if let image = self.photoPicker.image, self.isImageInstalled {

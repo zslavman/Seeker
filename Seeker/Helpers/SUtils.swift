@@ -9,8 +9,7 @@
 import UIKit
 import RealmSwift
 
-class Calc {
-	
+class SUtils {
 	
 	/// check UITextField/UITextView on empty or just only spaces
 	public static func checkBeforeUse<T>(field: T) -> String? {
@@ -45,9 +44,9 @@ class Calc {
 	///   - alertStrings: array of alert messages
 	public static func isFormValid<T>(textfields:[T], alertStrings:[String?]) -> UIAlertController? {
 		for (index, _) in textfields.enumerated(){
-			if Calc.checkBeforeUse(field: textfields[index]) == nil { 	// if field is empty
+			if SUtils.checkBeforeUse(field: textfields[index]) == nil { 	// if field is empty
 				let message = alertStrings[index] ?? "Неправильно поданы агрументы alertStrings"
-				return Calc.createAlert(message: message)
+				return SUtils.createAlert(message: message)
 			}
 		}
 		return nil
@@ -116,6 +115,12 @@ class Calc {
 	}
 		
 	
+	/// play taptic feedback
+	public static func tapticFeedback() {
+		let impactFeedbackgenerator = UIImpactFeedbackGenerator(style: .heavy)
+		impactFeedbackgenerator.prepare()
+		impactFeedbackgenerator.impactOccurred()
+	}
 	
 }
 
@@ -130,18 +135,6 @@ func realmInstance() throws -> Realm {
 	// print(Realm.Configuration.defaultConfiguration.fileURL!) // local path for Realm Browser
 	return realm
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

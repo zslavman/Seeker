@@ -78,42 +78,43 @@ extension CompaniesController {
 	}
 	
 	
-	@objc private func onLongPress(sender: UIGestureRecognizer){
+	@objc private func onLongPress(sender: UIGestureRecognizer) {
 		let location = sender.location(in: self.tableView)
 		guard let indexPath = self.tableView.indexPathForRow(at: location) else { return }
 		guard sender.state == .began else { return }
-		
 		let actionSheetVC = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-		
 		let appAction = UIAlertAction(title: "Открыть ChatApp", style: .default) {
 			_ in
 			self.runUrlSheme(shemeName: "chatapp://")
 		}
-		actionSheetVC.addAction(appAction)
 		//*****
 		let mailAction = UIAlertAction(title: "Открыть Emails", style: .default) {
 			_ in
 			self.runUrlSheme(shemeName: "message://")
 		}
 		mailAction.actionImage = UIImage(named: "mail")
-		actionSheetVC.addAction(mailAction)
 		//*****
 		let editAction = UIAlertAction(title: "Редактировать", style: .default) {
 			_ in
 			self.edit(indexPath: indexPath)
 		}
 		editAction.actionImage = UIImage(named: "icon_edit")
-		actionSheetVC.addAction(editAction)
 		//*****
 		let delAction = UIAlertAction(title: "Удалить", style: .destructive) {
 			_ in
 			self.delCompany(indexPath: indexPath)
 		}
 		delAction.actionImage = UIImage(named: "icon_del")
-		actionSheetVC.addAction(delAction)
 		//*****
 		let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
+		
+		actionSheetVC.addAction(appAction)
+		actionSheetVC.addAction(mailAction)
+		actionSheetVC.addAction(editAction)
+		actionSheetVC.addAction(delAction)
 		actionSheetVC.addAction(cancelAction)
+		
+		SUtils.tapticFeedback()
 		
 		// for iPad only
 		if (UIDevice.current.userInterfaceIdiom == .pad){

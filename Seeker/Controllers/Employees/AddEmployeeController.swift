@@ -141,14 +141,14 @@ class AddEmployeeController: UIViewController {
 	
 	
 	private func generateRandDate() -> String {
-		let newDate = Calc.randomWithinYearsBeforeToday(20, 40)
-		let strDate = Calc.convertDate(date: newDate)
+		let newDate = SUtils.randomWithinYearsBeforeToday(20, 40)
+		let strDate = SUtils.convertDate(date: newDate)
 		return strDate
 	}
 	
 	
 	@objc private func onSaveClick(){
-		if let alertController = Calc.isFormValid(textfields: [nameInput, birthdayInput], alertStrings: ["Введите имя", "Введите дату"]){
+		if let alertController = SUtils.isFormValid(textfields: [nameInput, birthdayInput], alertStrings: ["Введите имя", "Введите дату"]){
 			present(alertController, animated: true)
 			return
 		}
@@ -156,7 +156,7 @@ class AddEmployeeController: UIViewController {
 		dateFormatter.dateFormat = dFormat
 		
 		guard let birthDate = dateFormatter.date(from: birthdayInput.text!) else {
-			let alertController = Calc.createAlert(message: "Неверный формат даты!")
+			let alertController = SUtils.createAlert(message: "Неверный формат даты!")
 			present(alertController, animated: true)
 			return
 		}

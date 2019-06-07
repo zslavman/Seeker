@@ -64,8 +64,8 @@ class CompanyCell: UITableViewCell {
 	private func setValues(){
 		mainLabel.text = company?.name
 		if let name = company?.name, let founded = company?.founded {
-			let string = Calc.convertDate(founded: founded)
-			mainLabel.attributedText = Calc.twoColorString(strings: (name, "  # Основана: \(string)"), colors: (UIColor.white, Props.green4))
+			let string = SUtils.convertDate(founded: founded)
+			mainLabel.attributedText = SUtils.twoColorString(strings: (name, "  # Основана: \(string)"), colors: (UIColor.white, Props.green4))
 		}
 		if let imageBinary = company?.imageData {
 			let img = UIImage(data: imageBinary)

@@ -185,8 +185,8 @@ extension EmployeesController: UITableViewDelegate, UITableViewDataSource {
 		cell.textLabel?.textColor = .white
 		cell.backgroundColor = Props.green3
 		if let birthday = employee.privateInformation?.birthDay {
-			let str2 = "  #  \(Calc.convertDate(founded: birthday))"
-			cell.textLabel?.attributedText = Calc.twoColorString(strings: (employee.name!, str2), colors: (UIColor.white, Props.green4))
+			let str2 = "  #  \(SUtils.convertDate(founded: birthday))"
+			cell.textLabel?.attributedText = SUtils.twoColorString(strings: (employee.name!, str2), colors: (UIColor.white, Props.green4))
 		}
 		return cell
 	}
