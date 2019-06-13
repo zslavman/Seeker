@@ -115,16 +115,39 @@ class SUtils {
 	}
 		
 	
-	/// play taptic feedback
-	public static func tapticFeedback() {
+	/// Play taptic feedback
+	///
+	/// - Parameter state: touch-state for avoid re-triggering
+	public static func tapticFeedback(state: UIGestureRecognizer.State? = nil) {
+		if state != nil {
+			guard state == .began else { return }
+		}
 		let impactFeedbackgenerator = UIImpactFeedbackGenerator(style: .heavy)
 		impactFeedbackgenerator.prepare()
 		impactFeedbackgenerator.impactOccurred()
+		// more sensetive feedback with 3 cases:
+		//let generator = UINotificationFeedbackGenerator()
+		//generator.notificationOccurred(.success)
 	}
 	
 }
 
 
+
+class UILongPressGestureRecognizerTaptic: UILongPressGestureRecognizer {
+	
+	override init(target: Any?, action: Selector?) {
+		super.init(target: target, action: action)
+	}
+	
+	convenience init(target: Any?, action: Selector?, call: () -> ()) {
+		self.init(target: target, action: #selector(my))
+	}
+	
+	@objc func my() {
+		
+	}
+}
 
 
 // outside class

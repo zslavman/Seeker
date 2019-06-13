@@ -79,16 +79,16 @@ extension CompaniesController {
 	
 	
 	@objc private func onLongPress(sender: UIGestureRecognizer) {
+		guard sender.state == .began else { return }
 		let location = sender.location(in: self.tableView)
 		guard let indexPath = self.tableView.indexPathForRow(at: location) else { return }
-		guard sender.state == .began else { return }
 		let actionSheetVC = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-		let appAction = UIAlertAction(title: "Открыть ChatApp", style: .default) {
+		let appAction = UIAlertAction(title: "Перейти в ChatApp", style: .default) {
 			_ in
 			self.runUrlSheme(shemeName: "chatapp://")
 		}
 		//*****
-		let mailAction = UIAlertAction(title: "Открыть Emails", style: .default) {
+		let mailAction = UIAlertAction(title: "Перейти в Emails", style: .default) {
 			_ in
 			self.runUrlSheme(shemeName: "message://")
 		}
@@ -114,7 +114,7 @@ extension CompaniesController {
 		actionSheetVC.addAction(delAction)
 		actionSheetVC.addAction(cancelAction)
 		
-		SUtils.tapticFeedback()
+		SUtils.tapticFeedback(state: sender.state)
 		
 		// for iPad only
 		if (UIDevice.current.userInterfaceIdiom == .pad){

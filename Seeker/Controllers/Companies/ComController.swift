@@ -48,7 +48,7 @@ class CompaniesController: UITableViewController {
 		return realm.objects(RealmCompany.self).sorted { $0.name.lowercased() < $1.name.lowercased() }
 	}
 	
-	internal func addRefreshControl(){
+	internal func addRefreshControl() {
 		if refreshControl == nil {
 			refreshControl = UIRefreshControl()
 			refreshControl!.tintColor = .white
@@ -58,7 +58,7 @@ class CompaniesController: UITableViewController {
 		}
 	}
 	
-	internal func removeRefreshControl(){
+	internal func removeRefreshControl() {
 		if refreshControl == nil {
 			return
 		}
@@ -71,7 +71,7 @@ class CompaniesController: UITableViewController {
 	}
 	
 	// pull to refresh
-	@objc internal func onRefresh(){
+	@objc internal func onRefresh() {
 		// if problems with network occurred
 		DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: DispatchTime.now() + 2) {
 			DispatchQueue.main.async {
@@ -90,14 +90,14 @@ class CompaniesController: UITableViewController {
 		})
 	}
 	
-	private func setupTableStyle(){
+	private func setupTableStyle() {
 		tableView.backgroundColor = Props.darkGreen
 		tableView.separatorColor = .white
 		tableView.tableFooterView = UIView()
 		tableView.register(CompanyCell.self, forCellReuseIdentifier: cellID)
 	}
 	
-	@objc private func onRemoveAll(){
+	@objc private func onRemoveAll() {
 		try! realm.write {
 			let count = tableView.numberOfRows(inSection: 0)
 			let rows = (0..<count).map { IndexPath(row: $0, section: 0)}
@@ -107,7 +107,7 @@ class CompaniesController: UITableViewController {
 		}
 	}
 	
-	@objc private func onPlusClick(){
+	@objc private func onPlusClick() {
 		let addCompanyController = AddCompanyController()
 		let navController = UINavigationController(rootViewController: addCompanyController)
 		addCompanyController.companiesControllerDelegate = self
@@ -118,7 +118,7 @@ class CompaniesController: UITableViewController {
 		edit(indexPath: indexPath)
 	}
 	
-	internal func edit(indexPath: IndexPath){
+	internal func edit(indexPath: IndexPath) {
 		let editCompanyController = AddCompanyController()
 		editCompanyController.companiesControllerDelegate = self
 		editCompanyController.company = companiesArr[indexPath.row]
@@ -127,7 +127,7 @@ class CompaniesController: UITableViewController {
 		present(navController, animated: true, completion: nil)
 	}
 	
-	internal func delCompany(indexPath: IndexPath){
+	internal func delCompany(indexPath: IndexPath) {
 		let willRemoved = companiesArr[indexPath.row]
 		try! realm.write {
 			if let object = realm.objects(RealmCompany.self).filter("id == %@", willRemoved.id).first {
@@ -138,7 +138,7 @@ class CompaniesController: UITableViewController {
 		}
 	}
 	
-	private func animateTableWithSections(){
+	private func animateTableWithSections() {
 		tableView.reloadData()
 		let range = NSMakeRange(0, tableView.numberOfSections)
 		let sections = NSIndexSet(indexesIn: range)
