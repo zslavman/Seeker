@@ -218,13 +218,41 @@ extension AddCompanyController: UIImagePickerControllerDelegate, UINavigationCon
 		else if let originalImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
 			selectedImage = originalImage
 		}
-		if selectedImage != nil {
+		if let selectedImage = selectedImage {
 			photoPicker.image = selectedImage
+			let localPath = saveCropedImageToSandBox(image: selectedImage)
+			print(localPath)
 			roundPhoto()
 			isImageInstalled = true
 		}
 		dismiss(animated: true, completion: nil)
 	}
+	
+	
+	/// save croped image to sandbox and return it local URL
+	internal func saveCropedImageToSandBox(image: UIImage) -> URL {
+		let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+		let fileName = UUID().uuidString + ".jpg"
+		var fileLocalURL = documentsDirectory.appendingPathComponent(fileName)
+		
+		// prevent backup files on iCloud
+		var resourceValues = URLResourceValues()
+		resourceValues.isExcludedFromBackup = true
+		
+		if let data = image.jpegData(compressionQuality:  0.9) {
+			do {
+				try fileLocalURL.setResourceValues(resourceValues)
+				try data.write(to: fileLocalURL)
+			}
+			catch {
+				print("Error saving file:", error)
+			}
+		}
+		return fileLocalURL
+	}
+	
+	
+	
 	
 }
 

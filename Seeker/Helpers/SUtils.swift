@@ -130,6 +130,25 @@ class SUtils {
 		//generator.notificationOccurred(.success)
 	}
 	
+	
+	/// Prevent backup files on iCloud
+	///
+	/// - Parameter localUrl: local Url-link of file
+	public static func iCloudPreventBackupFile(localUrl: URL?) {
+		guard let localUrl = localUrl else {
+			print("given file URL is not valid!")
+			return
+		}
+		var _localUrl = localUrl
+		do {
+			var resourceValues = URLResourceValues()
+			resourceValues.isExcludedFromBackup = true
+			try _localUrl.setResourceValues(resourceValues)
+		} catch {
+			print(error.localizedDescription)
+		}
+	}
+	
 }
 
 // outside class
