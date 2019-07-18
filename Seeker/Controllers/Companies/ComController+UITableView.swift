@@ -57,7 +57,7 @@ extension CompaniesController {
 		let selectionColor = UIView()
 		selectionColor.backgroundColor = Props.blue4
 		cell.selectedBackgroundView = selectionColor
-		let longGesture = UILongPressGestureRecognizer(target: self, action: #selector(onLongPress(sender:)))
+		let longGesture = UILongPressGestureRecognizer(target: self, action: #selector(onLongPress))
 		longGesture.minimumPressDuration = 0.7
 		cell.addGestureRecognizer(longGesture)
 		

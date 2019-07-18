@@ -132,24 +132,6 @@ class SUtils {
 	
 }
 
-
-
-class UILongPressGestureRecognizerTaptic: UILongPressGestureRecognizer {
-	
-	override init(target: Any?, action: Selector?) {
-		super.init(target: target, action: action)
-	}
-	
-	convenience init(target: Any?, action: Selector?, call: () -> ()) {
-		self.init(target: target, action: #selector(my))
-	}
-	
-	@objc func my() {
-		
-	}
-}
-
-
 // outside class
 
 func realmInstance() throws -> Realm {
